@@ -9,7 +9,7 @@ $Out = new FileWriter();
 function PrintInstruction($i)
 {
   global $Out;
-  
+
   static $cnt = 1;
   $i->setOrder($cnt);
   $Out->write( $i->toXML() );
@@ -21,10 +21,13 @@ while( ($str = $In->read()) != false)
 {
   if($In->eof()) { break; }
 
-  // parses one line
-  $i = ParseLine($str);
+  // parses line
+  if( ($i = GenerateInstruction($str)) == NULL)
+  {
+    echo "ERROR!";
+    break;
+  }
 
-  // prints to the output
   PrintInstruction($i);
 
 }
