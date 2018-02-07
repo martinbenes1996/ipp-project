@@ -9,11 +9,6 @@ class Argument
     $this->num = $num;
   }
 
-  function setNum($num)
-  {
-    $this->num = $num;
-  }
-
   function toXML()
   {
     return ( $this->type != "" ) ?

@@ -1,11 +1,11 @@
 <?php
 
 include 'typedefs.php';
-include 'functions.php';
+include 'io.php';
 
 class Compiler
 {
-  function __construct()
+  public function __construct()
   {
     $this->in = new FileReader();  // stdin
     $this->out = new FileWriter(); // stdout
@@ -31,11 +31,35 @@ class Compiler
     $this->out->write("</program>\n");
   }
 
-  function isBroken() { return ! $this->works; }
-  function getErrorMessage() { return $this->err_msg; }
-  function getErrorCode() { return $this->err_code; }
+  public function isBroken() { return ! $this->works; }
+  public function getErrorMessage() { return $this->err_msg; }
+  public function getErrorCode() { return $this->err_code; }
 
-  function GenerateConstant($str, $num)
+  public function ProcessLine()
+  {
+    static $cnt = 1;
+
+    if( (($str = $this->in->read()) == false) || $this->in->eof()) return False; // EOF check
+    $i = $this->GenerateInstruction($str); // generate instruction
+
+    if($i == NULL) return $this->works;
+
+    $i->setOrder($cnt);
+    $cnt++;
+
+    $this->out->write( $i->toXML() );
+
+    return True;
+  }
+
+  private function setError($msg)
+  {
+    $this->err_msg = $msg;
+    $this->err_code = 21;
+    $this->works = False;
+  }
+
+  private function GenerateConstant($str, $num)
   {
     global $const_regex;
     if( preg_match($const_regex, $str) )
@@ -46,7 +70,7 @@ class Compiler
     else return NULL;
   }
 
-  function GenerateVariable($str, $num)
+  private function GenerateVariable($str, $num)
   {
     global $var_regex;
     if( preg_match($var_regex, $str) )
@@ -56,7 +80,7 @@ class Compiler
     else return NULL;
   }
 
-  function GenerateArgument($str, $num)
+  private function GenerateArgument($str, $num)
   {
     $var = $this->GenerateVariable($str, $num);
     if($var != NULL) return $var;
@@ -67,7 +91,7 @@ class Compiler
     return NULL;
   }
 
-  function GenerateLabel($str, $num)
+  private function GenerateLabel($str, $num)
   {
     global $id_regex;
     if( preg_match($id_regex, $str) )
@@ -77,7 +101,7 @@ class Compiler
     else return NULL;
   }
 
-  function GenerateType($str, $num)
+  private function GenerateType($str, $num)
   {
     global $type_regex;
     if( preg_match($type_regex, $str) )
@@ -87,11 +111,11 @@ class Compiler
     else return NULL;
   }
 
-  function GenerateInstruction($line)
+  private function GenerateInstruction($line)
   {
     // separate line to list
-    $l = SeparateLine($line);
-    if($l == NULL) return NULL;
+    $l = $this->SeparateLine($line);
+    if($l == NULL) return $this->works;
 
     // 0 arguments ------------------------------
     if(($l[0] == 'PUSHFRAME')
@@ -103,9 +127,7 @@ class Compiler
       // args bad count
       if(count($l) != 1)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Bad arguments in instruction ".$l[0]);
         return NULL;
       }
 
@@ -126,9 +148,7 @@ class Compiler
       // args bad count
       if(count($l) != 2)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
 
@@ -141,9 +161,7 @@ class Compiler
       // args error
       if($l[1] == NULL)
       {
-        $this->err_msg = "First argument error in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
     }
@@ -157,9 +175,7 @@ class Compiler
       // args bad count
       if(count($l) != 2)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
 
@@ -172,9 +188,7 @@ class Compiler
       // args error
       if($l[1] == NULL)
       {
-        $this->err_msg = "First argument error in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
     }
@@ -190,9 +204,7 @@ class Compiler
       // args bad count
       if(count($l) != 3)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
 
@@ -205,9 +217,7 @@ class Compiler
       // args error
       if(($l[1] == NULL) || ($l[2] == NULL))
       {
-        $this->err_msg = "Argument error in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
     }
@@ -219,9 +229,7 @@ class Compiler
       // args bad count
       if(count($l) != 3)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
 
@@ -234,9 +242,7 @@ class Compiler
       // args error
       if(($l[1] == NULL) || ($l[2] == NULL))
       {
-        $this->err_msg = "Argument error in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
     }
@@ -260,9 +266,7 @@ class Compiler
       // args bad count
       if(count($l) != 4)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
 
@@ -274,9 +278,7 @@ class Compiler
       // args error
       if(($l[1] == NULL) || ($l[2] == NULL) || ($l[3] == NULL))
       {
-        $this->err_msg = "Argument error in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
     }
@@ -289,9 +291,7 @@ class Compiler
       // args bad count
       if(count($l) != 4)
       {
-        $this->err_msg = "Bad arguments in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
 
@@ -303,9 +303,7 @@ class Compiler
       // args error
       if(($l[1] == NULL) || ($l[2] == NULL) || ($l[3] == NULL))
       {
-        $this->err_msg = "Argument error in instruction " . $l[0];
-        $this->err_code = 1;
-        $this->works = False;
+        $this->setError("Argument error in instruction ".$l[0]);
         return NULL;
       }
     }
@@ -313,30 +311,29 @@ class Compiler
     // none of these
     else
     {
-      $this->err_msg = "Unknown instruction " . $l[0];
-      $this->err_code = 1;
-      $this->works = False;
+      $this->setError("Unknown instruction ".$l[0]);
       return NULL;
     }
 
     return new Instruction($l[0], $l[1], $l[2], $l[3]);
   }
 
-  function ProcessLine()
+  private function SeparateLine($line)
   {
-    static $cnt = 1;
+    $line = trim($line);
 
-    if( (($str = $this->in->read()) == false) || $this->in->eof()) return False; // EOF check
-    $i = $this->GenerateInstruction($str); // generate instruction
+    // uncomment
+    if( preg_match('/(.*)#(.*)/', $line) ) {
+      $line = preg_split('/#/', $line );
+      $line = trim($line[0]);
+    }
 
-    if($i == NULL) return $this->works;
+    if($line == "") return NULL; // skip empty
 
-    $i->setOrder($cnt);
-    $cnt++;
+    $l = preg_split('/ /', $line ); // splits line to list
+    $l[0] = strtoupper($l[0]);   // capitalize opcode (it is case-insensitive)
 
-    $this->out->write( $i->toXML() );
-
-    return True;
+    return $l;
   }
 
 

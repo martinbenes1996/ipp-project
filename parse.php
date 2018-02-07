@@ -1,7 +1,6 @@
 <?php
 
 include 'analyze.php';
-include 'io.php';
 
 // streams
 $ErrOut = new FileWriter('php://stderr');  // stderr
@@ -11,7 +10,7 @@ $c = new Compiler(); // create compiler
 
 if( $c->isBroken() ) {    // error
   $ErrOut->write( $c->getErrorMessage() );
-  exit( $Err->getErrorCode() );
+  exit( $c->getErrorCode() );
 }
 
 while( $c->ProcessLine() ) { } // read cycle
