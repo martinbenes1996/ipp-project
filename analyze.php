@@ -1,75 +1,77 @@
 <?php
 
-class Argument
-{
-  function __construct($data, $type, $num)
-  {
+include 'typedefs.php';
+include 'functions.php';
 
-    $this->data = $data;
-    $this->type = $type;
-    $this->num = $num;
-  }
 
-  function setNum($num)
-  {
-    $this->num = $num;
-  }
-
-  function toXML()
-  {
-    return ( $this->type != "" ) ?
-      ("<arg".$this->num." type=\"".$this->type."\">" .
-          $this->data .
-       "</arg".$this->num.">\n") : "";
-  }
-}
-
-class Instruction
-{
-  function __construct($opcode, $arg1 = NULL, $arg2 = NULL, $arg3 = NULL)
-  {
-      $this->opcode = $opcode;
-      $this->arg1 = $arg1;
-      $this->arg2 = $arg2;
-      $this->arg3 = $arg3;
-  }
-
-  function setOrder($order)
-  {
-    $this->order = $order;
-  }
-
-  function toXML()
-  {
-    return "<instruction order=\"" . $this->order . "\" ".
-                       "opcode=\"" . $this->opcode ."\" >\n".
-        (($this->arg1) ? "\t".$this->arg1->toXML() : "") .
-        (($this->arg2) ? "\t".$this->arg2->toXML() : "") .
-        (($this->arg3) ? "\t".$this->arg3->toXML() : "") .
-      "</instruction>\n";
-
-  }
-}
-
+/**
+ * @brief   Generates Argument object.
+ */
 function GenerateArgument($str, $num)
 {
-  return new Argument("3", "int", $num);
+  global $const_regex;
+  global $var_regex;
+
+  // constant
+  if( preg_match($const_regex, $str) )
+  {
+    list($type, $data) = explode('@', $str, 2);
+    return new Argument($data, $type, $num);
+  }
+  // variable
+  elseif ( preg_match($var_regex, $str) )
+  {
+    return new Argument($str, "var", $num);
+  }
+  // arror
+  else
+  {
+    return NULL;
+  }
 }
 
+/**
+ * @brief   Generate label Argument object.
+ */
 function GenerateLabel($str, $num)
 {
-  return new Argument($str, "label", $num);
+  global $id_regex;
+
+  // label
+  if( preg_match($id_regex, $str) )
+  {
+    return new Argument($str, "label", $num);
+  }
+  //
+  else
+  {
+    return NULL;
+  }
 }
 
+/**
+ * @brief   Generate type Argument object.
+ */
 function GenerateType($str, $num)
 {
-  return new Argument($str, "label", $num);
+  if( preg_match('/(int)(bool)(string)/', $str) )
+  {
+    return new Argument($str, "type", $num);
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
+/**
+ * @brief   Generate Instruction object.
+ */
 function GenerateInstruction($line)
 {
-  $l = split(' ', trim( $line )); // splits to list
-  $l[0] = strtoupper($l[0]);
+  // separate line to list
+  $l = SeparateLine($line);
+  if($l == NULL) { return NULL; }
 
   // 0 arguments ------------------------------
   if(($l[0] == 'PUSHFRAME')
@@ -185,7 +187,7 @@ function GenerateInstruction($line)
 
 
   // 3 arguments, first is label
-  elseif(($l[0] == 'JUMPIGEQ')
+  elseif(($l[0] == 'JUMPIFEQ')
       || ($l[0] == 'JUMPIFNEQ') )
   {
     // args bad count

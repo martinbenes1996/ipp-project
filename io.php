@@ -1,7 +1,5 @@
 <?php
 
-  include 'structures.php';
-
   class File
   {
     public $handle = null;
@@ -17,7 +15,7 @@
       parent::__construct($name, 'r');
     }
 
-    function read() { return fgets($this->handle); }
+    function read() { return trim(fgets($this->handle)); }
   }
 
   class FileWriter extends File
