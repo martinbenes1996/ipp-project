@@ -41,7 +41,7 @@ class Instruction
   function toXML()
   {
     return "\t<instruction order=\"" . $this->order . "\" ".
-                         "opcode=\"" . $this->opcode ."\" >\n".
+                         "opcode=\"" . $this->opcode ."\">\n".
         (($this->arg1) ? "\t\t".$this->arg1->toXML() : "") .
         (($this->arg2) ? "\t\t".$this->arg2->toXML() : "") .
         (($this->arg3) ? "\t\t".$this->arg3->toXML() : "") .
@@ -49,10 +49,15 @@ class Instruction
 
   }
 }
-
 $const_regex = '/(int@[-+]{0,1}[0-9][0-9]*)|(string@[^\s\b#]*)|(bool@((true)|(false)))/';
-$id_regex = '/[-a-zA-Z_$&%*]+/';
-$var_regex = '/((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+/';
+// constant is    ^ integer              or  ^ string       or  ^ bool
 
+$id_regex = '/[-a-zA-Z_$&%*]+/';
+// id consists of ^ these
+
+$var_regex = '/((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+/';
+// variable has ^ frame and    ^ at and ^ id
+
+$type_regex = '/(bool)|(int)|(string)/'
 
 ?>
