@@ -5,18 +5,20 @@ include 'io.php';
 
 $In = new FileReader();
 $Out = new FileWriter();
+$Err = new FileWriter('php://stderr');
 
 function PrintInstruction($i)
 {
   global $Out;
-
+  global $Xml;
   static $cnt = 1;
+
   $i->setOrder($cnt);
   $Out->write( $i->toXML() );
   $cnt++;
 }
 
-$cnt = 1;
+
 while( ($str = $In->read()) != false)
 {
   if($In->eof()) { break; }

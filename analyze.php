@@ -2,10 +2,12 @@
 
 class Argument
 {
-  function __construct($data = "", $type = "")
+  function __construct($data, $type, $num)
   {
+
     $this->data = $data;
     $this->type = $type;
+    $this->num = $num;
   }
 
   function setNum($num)
@@ -49,86 +51,160 @@ class Instruction
   }
 }
 
+function GenerateArgument($str, $num)
+{
+  return new Argument("3", "int", $num);
+}
+
+function GenerateLabel($str, $num)
+{
+  return new Argument($str, "label", $num);
+}
+
+function GenerateType($str, $num)
+{
+  return new Argument($str, "label", $num);
+}
+
 function GenerateInstruction($line)
 {
   $l = split(' ', trim( $line )); // splits to list
   $l[0] = strtoupper($l[0]);
 
-  if( $l[0] == 'MOVE' ) {
+  // 0 arguments ------------------------------
+  if(($l[0] == 'PUSHFRAME')
+  || ($l[0] == 'CREATEFRAME')
+  || ($l[0] == 'POPFRAME')
+  || ($l[0] == 'RETURN')
+  || ($l[0] == 'BREAK') )
+  {
+    // args bad count
+    if( count($l) != 1 ) { return NULL; }
 
-  } elseif( $l[0] == 'CREATEFRAME' ) {
+    // sample fill
+    $l[1] = NULL;
+    $l[2] = NULL;
+    $l[3] = NULL;
+  }
 
-  } elseif( $l[0] == 'PUSHFRAME' ) {
+  // 1 argument --------------------------------
+  elseif(($l[0] == 'DEFVAR')
+      || ($l[0] == 'PUSHS')
+      || ($l[0] == 'POPS')
+      || ($l[0] == 'WRITE')
+      || ($l[0] == 'JUMP')
+      || ($l[0] == 'DPRINT') )
+  {
+    // args bad count
+    if( count($l) != 2 ) { return NULL; }
+    // process args
+    $l[1] = GenerateArgument( $l[1], 1 );
+    // sample fill
+    $l[2] = NULL;
+    $l[3] = NULL;
+    // args error
+    if($l[1] == NULL) { return NULL; }
+  }
 
-  } elseif( $l[0] == 'POPFRAME' ) {
 
-  } elseif( $l[0] == 'DEFVAR' ) {
+  // 1 argument, first is label ------------------
+  elseif(($l[0] == 'CALL')
+      || ($l[0] == 'LABEL')
+      || ($l[0] == 'JUMP') )
+  {
+    // args bad count
+    if( count($l) != 2 ) { return NULL; }
+    // process args
+    $l[1] = GenerateLabel( $l[1], 1 );
+    // sample fill
+    $l[2] = NULL;
+    $l[3] = NULL;
+    // args error
+    if($l[1] == NULL) { return NULL; }
+  }
 
-  } elseif( $l[0] == 'CALL' ) {
 
-  } elseif( $l[0] == 'RETURN' ) {
+  // 2 arguments
+  elseif(($l[0] == 'MOVE')
+      || ($l[0] == 'INT2CHAR')
+      || ($l[0] == 'NOT')
+      || ($l[0] == 'STRLEN')
+      || ($l[0] == 'TYPE') )
+  {
+    // args bad count
+    if( count($l) != 3 ) { return NULL; }
+    // process args
+    $l[1] = GenerateArgument( $l[1], 1 );
+    $l[2] = GenerateArgument( $l[2], 2 );
+    // sample fill
+    $l[3] = NULL;
+    // args error
+    if(($l[1] == NULL) || ($l[2] == NULL)) { return NULL; }
+  }
 
-  } elseif( $l[0] == 'PUSHS' ) {
 
-  } elseif( $l[0] == 'POPS' ) {
+  // 2 arguments, second is type
+  elseif(($l[0] == 'READ'))
+  {
+    // args bad count
+    if( count($l) != 3 ) { return NULL; }
+    // process args
+    $l[1] = GenerateArgument( $l[1], 1 );
+    $l[2] = GenerateType( $l[2], 2 );
+    // sample fill
+    $l[3] = NULL;
+    // args error
+    if(($l[1] == NULL) || ($l[2] == NULL)) { return NULL; }
+  }
 
-  } elseif( $l[0] == 'ADD' ) {
 
-  } elseif( $l[0] == 'SUB' ) {
+  // 3 arguments
+  elseif(($l[0] == 'ADD')
+      || ($l[0] == 'SUB')
+      || ($l[0] == 'MUL')
+      || ($l[0] == 'IDIV')
+      || ($l[0] == 'LT')
+      || ($l[0] == 'GT')
+      || ($l[0] == 'EQ')
+      || ($l[0] == 'AND')
+      || ($l[0] == 'OR')
+      || ($l[0] == 'STRI2INT')
+      || ($l[0] == 'CONCAT')
+      || ($l[0] == 'GETCHAR')
+      || ($l[0] == 'SETCHAR') )
+  {
+    // args bad count
+    if( count($l) != 4 ) { return NULL; }
+    // process args
+    $l[1] = GenerateArgument( $l[1], 1 );
+    $l[2] = GenerateArgument( $l[2], 2 );
+    $l[3] = GenerateArgument( $l[3], 3 );
+    // args error
+    if(($l[1] == NULL) || ($l[2] == NULL) || ($l[3] == NULL)) { return NULL; }
+  }
 
-  } elseif( $l[0] == 'MUL' ) {
 
-  } elseif( $l[0] == 'IDIV' ) {
+  // 3 arguments, first is label
+  elseif(($l[0] == 'JUMPIGEQ')
+      || ($l[0] == 'JUMPIFNEQ') )
+  {
+    // args bad count
+    if( count($l) != 4 ) { return NULL; }
+    // process args
+    $l[1] = GenerateLabel( $l[1], 1 );
+    $l[2] = GenerateArgument( $l[2], 2 );
+    $l[3] = GenerateArgument( $l[3], 3 );
+    // args error
+    if(($l[1] == NULL) || ($l[2] == NULL) || ($l[3] == NULL)) { return NULL; }
+  }
 
-  } elseif( $l[0] == 'LT' ) {
-
-  } elseif( $l[0] == 'GT' ) {
-
-  } elseif( $l[0] == 'EQ' ) {
-
-  } elseif( $l[0] == 'AND' ) {
-
-  } elseif( $l[0] == 'OR' ) {
-
-  } elseif( $l[0] == 'NOT' ) {
-
-  } elseif( $l[0] == 'INT2CHAR' ) {
-
-  } elseif( $l[0] == 'STRI2INT' ) {
-
-  } elseif( $l[0] == 'READ' ) {
-
-  } elseif( $l[0] == 'WRITE' ) {
-
-  } elseif( $l[0] == 'CONCAT' ) {
-
-  } elseif( $l[0] == 'STRLEN' ) {
-
-  } elseif( $l[0] == 'GETCHAR' ) {
-
-  } elseif( $l[0] == 'SETCHAR' ) {
-
-  } elseif( $l[0] == 'TYPE' ) {
-
-  } elseif( $l[0] == 'LABEL' ) {
-
-  } elseif( $l[0] == 'JUMP' ) {
-
-  } elseif( $l[0] == 'JUMPIFEQ' ) {
-
-  } elseif( $l[0] == 'JUMPIGNEQ' ) {
-
-  } elseif( $l[0] == 'DPRINT' ) {
-
-  } elseif( $l[0] == 'BREAK' ) {
-
-  } else {
+  // none of these
+  else
+  {
     return NULL;
   }
 
-  $a = new Argument(42, "int");
-  $a->setNum(1);
-  return new Instruction(42, $a, NULL, NULL);
+  return new Instruction($l[0], $l[1], $l[2], $l[3]);
 }
 
 ?>

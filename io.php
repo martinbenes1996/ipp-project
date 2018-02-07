@@ -1,5 +1,7 @@
 <?php
 
+  include 'structures.php';
+
   class File
   {
     public $handle = null;
