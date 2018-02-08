@@ -13,12 +13,30 @@
 
 include 'analyse.php'; // Compiler, FileWriter
 
-
 /**
  * Error stream.
  * @var FileWriter
  */
 $ErrOut = new FileWriter('php://stderr');
+
+
+/* ------ ARGS ------ */
+foreach( array_slice($argv,1) as $a )
+{
+  // help
+  if($a == "--help")
+  {
+    PrintHelp();
+    exit(0);
+  }
+  // unknown argument
+  else
+  {
+    $ErrOut->write( "Unknown argument ".$a."!\n" );
+    exit(10);
+  }
+}
+/* ----------------- */
 
 
 // ==================================================
@@ -32,7 +50,7 @@ try {
 
 // error occurred
 } catch(Exception $e) {
-  $ErrOut->write( $e->getMessage()."!\n"); // read to stderr
+  $ErrOut->write( $e->getMessage()."!\n"); // write to stderr
   exit(21); // end
 }
 

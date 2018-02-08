@@ -315,8 +315,14 @@ $id_regex = '/[-a-zA-Z_$&%*]+/';
 $var_regex = '/((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+/';
 // variable has ^ frame and    ^ at and ^ id
 
-$type_regex = '/(bool)|(int)|(string)/'
+$type_regex = '/(bool)|(int)|(string)/';
 
 /* =========================================================================== */
+
+
+function PrintHelp()
+{
+  echo "Printing help!";
+}
 
 ?>
