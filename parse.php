@@ -1,23 +1,44 @@
 <?php
 
-include 'analyze.php';
+/**
+ * Parse main module.
+ *
+ * This module is main to call in this programme. It does lexical and syntactic
+ * analysis of IPPcode18 and its transcription to XML.
+ *
+ * @package parse.php
+ * @author xbenes49
+ * @copyright Martin Benes (c) 2018
+ */
 
-// streams
-$ErrOut = new FileWriter('php://stderr');  // stderr
+include 'analyse.php'; // Compiler, FileWriter
+
+
+/**
+ * Error stream.
+ * @var FileWriter
+ */
+$ErrOut = new FileWriter('php://stderr');
+
 
 // ==================================================
-$c = new Compiler(); // create compiler
 
-if( $c->isBroken() ) {    // error
-  $ErrOut->write( $c->getErrorMessage() );
-  exit( $c->getErrorCode() );
+try {
+  // create compiler
+  $c = new Compiler('php://stdin', 'php://stdout'); // reads from stdin, writes to stdout
+
+  // read cycle
+  while( $c->ProcessLine() ) {}
+
+// error occurred
+} catch(Exception $e) {
+  $ErrOut->write( $e->getMessage()."!\n"); // read to stderr
+  exit(21); // end
 }
 
-while( $c->ProcessLine() ) { } // read cycle
-
 // ==================================================
 
-$ErrOut->write( $c->getErrorMessage() ); // read to stderr
-exit( $c->getErrorCode() ); // end
+
+
 
 ?>
