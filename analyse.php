@@ -303,13 +303,25 @@ class Compiler
         || ($l[0] == 'PUSHS')
         || ($l[0] == 'POPS')
         || ($l[0] == 'WRITE')
-        || ($l[0] == 'JUMP')
         || ($l[0] == 'DPRINT') )
     {
       // args bad count
       if(count($l) != 2) throw new Exception("Argument error in instruction ".$l[0]);
       // process args
       $l[1] = $this->GenerateArgument( $l[1], 1 );
+      // sample fill
+      $l[2] = NULL;
+      $l[3] = NULL;
+      // args error
+      if($l[1] == NULL) throw new Exception("Argument error in instruction ".$l[0]);
+    }
+
+    elseif(($l[0] == 'POPS'))
+    {
+      // args bad count
+      if(count($l) != 2) throw new Exception("Argument error in instruction".$l[0]);
+      // process args
+      $l[1] = $this->GenerateVariable( $l[1], 1 );
       // sample fill
       $l[2] = NULL;
       $l[3] = NULL;
@@ -345,7 +357,7 @@ class Compiler
       // args bad count
       if(count($l) != 3) throw new Exception("Argument error in instruction ".$l[0]);
       // process args
-      $l[1] = $this->GenerateArgument( $l[1], 1 );
+      $l[1] = $this->GenerateVariable( $l[1], 1 );
       $l[2] = $this->GenerateArgument( $l[2], 2 );
       // sample fill
       $l[3] = NULL;
@@ -360,7 +372,7 @@ class Compiler
       // args bad count
       if(count($l) != 3) throw new Exception("Argument error in instruction ".$l[0]);
       // process args
-      $l[1] = $this->GenerateArgument( $l[1], 1 );
+      $l[1] = $this->GenerateVariable( $l[1], 1 );
       $l[2] = $this->GenerateType( $l[2], 2 );
       // sample fill
       $l[3] = NULL;
@@ -387,7 +399,7 @@ class Compiler
       // args bad count
       if(count($l) != 4) throw new Exception("Argument error in instruction ".$l[0]);
       // process args
-      $l[1] = $this->GenerateArgument( $l[1], 1 );
+      $l[1] = $this->GenerateVariable( $l[1], 1 );
       $l[2] = $this->GenerateArgument( $l[2], 2 );
       $l[3] = $this->GenerateArgument( $l[3], 3 );
       // args error

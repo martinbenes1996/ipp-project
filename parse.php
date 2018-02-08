@@ -4,7 +4,7 @@
 /**
  * Parse main module.
  *
- * This module is main to call in this programme. It does lexical and syntactic
+ * This module is main to call in this program. It does lexical and syntactic
  * analysis of IPPcode18 and its transcription to XML.
  *
  * @package parse.php
