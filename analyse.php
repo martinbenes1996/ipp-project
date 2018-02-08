@@ -45,6 +45,37 @@ class Compiler
    */
   private $out = null;
 
+  /**
+   * Count of lines of code.
+   * @var int
+   * @access private
+   */
+  private $loc = 0;
+
+  /**
+   * Count of lines with comment.
+   * @var int
+   * @access private
+   */
+  private $comments = 0;
+
+
+  /* -------- GETTERS -------- */
+  /**
+   * Returns LOC read.
+   * @access public
+   * @return int        LOC.
+   */
+  public function getLOC() { return $this->loc; }
+
+  /**
+   * Returns count of lines with comment.
+   * @access public
+   * @return int        Count of lines with comment.
+   */
+  public function getComments() { return $this->comments; }
+  /* ------------------------- */
+
   /* ======================================================== */
 
 
@@ -105,18 +136,17 @@ class Compiler
    */
   public function ProcessLine()
   {
-    // instruction counter (static)
-    static $cnt = 1;
 
     // read
     if( (($str = $this->in->read()) == false) || $this->in->eof()) return False; // EOF check
 
     // generate instruction
     $i = $this->GenerateInstruction($str);
+    if($i == NULL) return True;
 
     // set her order
-    $i->setOrder($cnt);
-    $cnt++;
+    $this->loc++;
+    $i->setOrder($this->loc);
 
     // write the instruction to XML
     $this->out->write( $i->toXML() );
@@ -251,7 +281,7 @@ class Compiler
   {
     // separate line to list
     $l = $this->SeparateLine($line);
-    if($l == NULL) return $this->works;
+    if($l == NULL) return NULL;
 
     // 0 arguments ------------------------------
     if(($l[0] == 'PUSHFRAME')
@@ -402,6 +432,7 @@ class Compiler
     if( preg_match('/(.*)#(.*)/', $line) ) {
       $line = preg_split('/#/', $line );
       $line = trim($line[0]);
+      $this->comments++;
     }
 
     if($line == "") return NULL; // skip empty

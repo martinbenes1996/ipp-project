@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 /**
@@ -20,24 +21,25 @@ include 'analyse.php'; // Compiler, FileWriter
 $ErrOut = new FileWriter('php://stderr');
 
 
-/* ------ ARGS ------ */
-foreach( array_slice($argv,1) as $a )
-{
-  // help
-  if($a == "--help")
-  {
-    PrintHelp();
-    exit(0);
-  }
-  // unknown argument
-  else
-  {
-    $ErrOut->write( "Unknown argument ".$a."!\n" );
-    exit(10);
-  }
-}
-/* ----------------- */
+/* -------- ARGS --------- */
+try {
 
+  /**
+   * Configuration
+   * @var Configuration
+   */
+  $conf = new Configuration($argv);
+
+// --help occured
+} catch(HelpException $e) {
+  exit(0);
+
+// bad arguments
+} catch(Exception $e) {
+  $ErrOut->write( $e->getMessage()."!\n");
+  exit(10);
+}
+/* ----------------------- */
 
 // ==================================================
 
@@ -57,6 +59,8 @@ try {
 // ==================================================
 
 
+// print statistics
+$conf->PrintStatistics($c->getLOC(), $c->getComments());
 
 
 ?>

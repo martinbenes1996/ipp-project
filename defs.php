@@ -306,23 +306,196 @@ class Instruction
 
 /* ============================= REGEX CONSTANTS ============================= */
 
+/**
+ * Regex, matching constants (int, string, bool).
+ * @var string
+ */
 $const_regex = '/(int@[-+]{0,1}[0-9][0-9]*)|(string@[^\s\b#]*)|(bool@((true)|(false)))/';
 // constant is    ^ integer              or  ^ string       or  ^ bool
 
+/**
+ * Regex, matching identifiers.
+ * @var string
+ */
 $id_regex = '/[-a-zA-Z_$&%*]+/';
 // id consists of ^ these
 
+/**
+ * Regex, matching variables.
+ * @var string
+ */
 $var_regex = '/((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+/';
 // variable has ^ frame and    ^ at and ^ id
 
+/**
+ * Regex, matching types.
+ * @var string
+ */
 $type_regex = '/(bool)|(int)|(string)/';
 
 /* =========================================================================== */
 
 
-function PrintHelp()
+/* ============================= Configuration ============================= */
+
+/**
+ * HelpException class.
+ *
+ * This class represents child exception, used, when --help appears.
+ * @package defs.php
+ * @subpackage Configuration
+ */
+class HelpException extends Exception
 {
-  echo "Printing help!";
+  /**
+   * Constructor of HelpException object.
+   *
+   * This method is create when instatiating HelpException object.
+   * @access public
+   * @param string message      Error message.
+   * @param int code            Error code.
+   * @param Exception previous  Previous exception.
+   */
+  public function __construct($message = "", $code = 0, Exception $previous = null) {
+    parent::__construct($message, $code, $previous);
+  }
+
+  /**
+   * Returns string representation of this HelpException object.
+   * @access public
+   * @returns string      String representation.
+   */
+  public function __toString() {
+    return $this->message;
+  }
 }
+
+/**
+ * Configuration
+ *
+ * This class represents configuration of the run. It contains and processes
+ * arguments of environment given and is able to print statistics.
+ * @package defs.php
+ * @subpackage Configuration
+ */
+class Configuration
+{
+
+  /* ---------- DATA --------- */
+  /**
+   * Filename of file to print statistics into. Must be present,
+   * when statistics are enabled.
+   * @var string
+   * @access private
+   */
+  private $stat_file = "";
+  /**
+   * Map of flags, given as arguments from terminal:
+   * stat is --stat="file", loc is --loc, comments is --comments
+   * @var array
+   * @access private
+   */
+  private $enabled = array( "stat" => False, "loc" => False, "comments" => False );
+  /**
+   * Key of the key, that appeared first in argv (will be first in statistics file).
+   * @var string
+   * @access private
+   */
+  private $first = "";
+  /* ------------------------- */
+
+  /**
+   * Constructor of Configuration object.
+   *
+   * This method is create when instatiating Configuration object.
+   * @access public
+   * @param array args          Argv from terminal.
+   */
+  public function __construct($args)
+  {
+    // every argument
+    foreach(array_slice($args,1) as $a)
+    {
+
+      // help
+      if($a == "--help") { $this->PrintHelp(); }
+
+
+      // --stat
+      elseif( preg_match('/--stat=".*"/', $a) )
+      {
+        // check if multiple
+        if( $this->enabled["stat"] ) throw new Exception("Multiple argument ".$a);
+        // set
+        $this->enabled["stat"] = True;
+        $this->stat_file = preg_split('/"/', $a)[1];
+      }
+
+
+      // --comments
+      elseif( $a == "--comments" )
+      {
+        // check if multiple
+        if( $this->enabled["comments"] ) throw new Exception("Multiple argument ".$a);
+        // set
+        $this->enabled["comments"] = True;
+        if($this->first == "") $this->first = "comments";
+      }
+
+      // --loc
+      elseif( $a == "--loc" )
+      {
+        // check if multiple
+        if( $this->enabled["loc"] ) throw new Exception("Multiple argument ".$a);
+        // set
+        $this->enabled["loc"] = True;
+        if($this->first == "") $this->first = "loc";
+      }
+
+      // unknown argument
+      else throw new Exception("Unknown argument ".$a);
+    }
+    // no --stat, but --loc or --comment
+    if(!$this->enabled["stat"] && $this->first != "")
+      throw new Exception("Not given argument --stat=\"file\"");
+    // -- stat, but no --loc or --comment
+    if($this->enabled["stat"] && $this->first == "")
+      throw new Exception("Not given any of arguments --loc or --comment");
+  }
+
+  /**
+   * Prints statistics to the statistics file.
+   * @access public
+   * @param string loc        LOC count.
+   * @param string comments   Comments count.
+   */
+  public function PrintStatistics($loc, $comments)
+  {
+    if(!$this->enabled["stat"]) return;
+
+    $stat = new FileWriter($this->stat_file);
+    if($this->first == "loc")
+    {
+      $stat->write($loc."\n");
+      if($this->enabled["comments"]) $stat->write($comments."\n");
+    }
+    else
+    {
+      $stat->write($comments."\n");
+      if($this->enabled["loc"]) $stat->write($loc."\n");
+    }
+  }
+
+  /**
+   * Prints help. Always throws HelpException.
+   * @access public
+   */
+  public function PrintHelp()
+  {
+    echo "Printing help!\n";
+    throw new HelpException();
+  }
+}
+
 
 ?>
