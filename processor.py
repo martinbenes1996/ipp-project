@@ -14,12 +14,8 @@ import re # Regex
 # user
 import read as Read # Reader
 import write as Write # Writer
-
-class HelpException(Exception):
-    def __init__(self):
-        pass
-    def __str__(self):
-        return ""
+import error as Err
+import model as Model
 
 class Processor:
     """ This is Processor class. """
@@ -32,25 +28,26 @@ class Processor:
         self.writer = Write.Writer(argv)
         # create reader
         self.reader = Read.Reader(self.src)
+        Model.PrintModel()
 
-    def NextInstruction():
+    def NextInstruction(self):
         """ Runs next instruction. """
         try:
-            instruction = self.reader.GetInstruction(self.ic)
-            self.ic = instruction.Execute()
-        except Read.ProgramExitException:
+            instruction = self.reader.Decode()
+            instruction()
+            Model.PrintModel()
+        except Err.ProgramExitException:
+            print("Program exit!")
             return False
-        
+
+        return True
+
 
     def ProcessArguments(self, argv):
         """ Processes arguments from terminal. """
         # default
-        self.src = "sys.stdin"
+        self.src = None
         self.ic = 0
-
-        # no arguments
-        if len(argv) is 1:
-            return
 
         # go through the argument list
         src_regex = re.compile(r'^((?<=--source=\")[^/\"~]+(?=\"))|((?<=--source=)[^/\"~]+(?=))$')
@@ -58,14 +55,18 @@ class Processor:
             # help
             if a is "--help":
                 self.PrintHelp()
-                raise HelpException()
+                raise Err.HelpException()
 
             # source
             elif src_regex.search(a) is not None:
                 self.src = src_regex.search(a).group()
 
             else:
-                raise Exception("Unknown parameter " + a + "!")
+                raise Err.ParameterException("Unknown parameter " + a + "!")
+
+        if self.src is None:
+            print("Error")
+            raise Err.ParameterException('--source=file parameter missing.')
 
     def PrintHelp(self):
         print("Printing help!")

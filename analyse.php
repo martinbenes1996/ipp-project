@@ -299,9 +299,7 @@ class Compiler
     }
 
     // 1 argument --------------------------------
-    elseif(($l[0] == 'DEFVAR')
-        || ($l[0] == 'PUSHS')
-        || ($l[0] == 'POPS')
+    elseif(($l[0] == 'PUSHS')
         || ($l[0] == 'WRITE')
         || ($l[0] == 'DPRINT') )
     {
@@ -316,7 +314,9 @@ class Compiler
       if($l[1] == NULL) throw new Exception("Argument error in instruction ".$l[0]);
     }
 
-    elseif(($l[0] == 'POPS'))
+    // 1 argument, first is variable --------------
+    elseif(($l[0] == 'DEFVAR')
+        || ($l[0] == 'POPS') )
     {
       // args bad count
       if(count($l) != 2) throw new Exception("Argument error in instruction".$l[0]);

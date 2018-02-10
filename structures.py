@@ -39,7 +39,7 @@ class Stack:
         return iter(reversed(self.data))
     def __repr__(self):
         """ Makes Stack representable as str. """
-        return ', '.join( '{' + repr(it) + '}' for it in reversed(self.data) )
+        return ', '.join( repr(it) for it in reversed(self.data) )
     def __str__(self):
         """ Makes Stack printable. """
         return "Stack: " + repr(self)

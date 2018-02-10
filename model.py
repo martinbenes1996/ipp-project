@@ -10,7 +10,7 @@ Copyright: Martin Benes (c) 2018
 """
 
 import frame as Types # Frame, StackFrame
-
+import error as Err # exceptions
 
 TF = None # Frame
 GF = Types.Frame() # Frame
@@ -31,7 +31,7 @@ def PushFrame():
         LF.PushFrame(TF)
         TF = None
     else:
-        raise Exception("TF is not defined!")
+        raise Err.UndefinedFrameException("TF is not defined!")
 
 def PopFrame():
     """ Pops Frame from LF, saves it to TF.
@@ -43,8 +43,8 @@ def PopFrame():
 def PrintModel():
     """ Makes Model printable. """
     global TF
-    global LF
     global GF
+    global LF
     result = "Model:\n| TF: "
     if TF is not None: result += repr(TF)
     print(result + "\n| GF: " + repr(GF) + "\n| LF: " + repr(LF))

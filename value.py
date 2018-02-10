@@ -3,7 +3,7 @@
 class Constant:
     """ This is Constant class. """
 
-    def __init__(self, name, value, datatype):
+    def __init__(self, value, datatype):
         """ Constructor of Constant class. Saves value and datatype inside.
             The name is only for error messages. """
         self.name = name
@@ -26,6 +26,9 @@ class Constant:
         else:
             return self.type
 
+    def Write(self):
+        return repr(self)
+
     def __str__(self):
         """ Makes Constant representable """
         return "Constant: " + repr(self)
@@ -35,8 +38,10 @@ class Constant:
 
 class Variable(Constant):
     """ Class, that extends constant (value) to variable (may be changed). """
-    def __init__(self, name, value = None, datatype = None):
-        super().__init__(name, value, datatype)
+    def __init__(self, loc, name, value = None, datatype = None):
+        super().__init__(value, datatype)
+        self.loc = loc
+        self.name = name
 
     def SetValue(self, c):
         """ Sets value to given constant's value.
@@ -55,6 +60,12 @@ class Variable(Constant):
         # same types
         else:
             self.value = var.GetValue()
+
+    def GetName(self):
+        return self.name
+        
+    def GetLocation():
+        return self.loc
 
     def __str__(self):
         """ Makes Variable printable. """

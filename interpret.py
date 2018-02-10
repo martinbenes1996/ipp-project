@@ -12,6 +12,7 @@ Copyright: Martin Benes (c) 2018
 
 import processor as Proc
 import sys # exit
+import error as Err # exceptions
 
 def main():
     """ Main function. """
@@ -20,12 +21,15 @@ def main():
         # create Processor
         p = Proc.Processor(sys.argv)
 
+    # parameters
+    except Err.ParameterException as e:
+        print(e)
+        exit(e.GetCode())
+
     # --help
-    except Proc.HelpException():
-        sys.exit(0)
-    # error
-    except Exception:
-        sys.exit(1)
+    except Err.HelpException() as e:
+        sys.exit(e.GetCode())
+
 
 
     # ============================================ #
@@ -36,8 +40,9 @@ def main():
             pass
 
     # error
-    except:
-        sys.exit(1)
+    except Exception as e:
+        print(e)
+        sys.exit(e.GetCode())
 
     # ============================================ #
 

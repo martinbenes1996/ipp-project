@@ -10,6 +10,7 @@ Copyright: Martin Benes (c) 2018
 """
 
 import structures as Structs # Map, Stack
+import error as Err
 
 class Frame:
     """ This is Frame class. """
@@ -55,7 +56,7 @@ class Frame:
         return iter(self.vars)
     def __repr__(self):
         """ Makes Frame representable as str. """
-        return repr(self.vars)
+        return '{' + repr(self.vars) + '}'
     def __str__(self):
         """ Makes Frame printable. """
         return "Frame: " + repr(self)
@@ -79,40 +80,41 @@ class StackFrame(Frame):
             Will throw exception, if empty. """
         try:
             return self.frames.Pop()
-        except:
-            raise Exception("Empty stackframe!")
+        except IndexError:
+            raise Err.UndefinedFrameException("Empty stackframe!")
 
     def DefVar(self, name):
         """ Creates new top Frame variable.
             Will throw exception, if empty. """
         try:
             self.frames.Top().DefVar(name)
-        except:
-            raise Exception("Empty stackframe!")
+        except AttributeError:
+            raise Err.UndefinedFrameException("Empty stackframe!")
+
 
     def GetValue(self, name):
         """ Returns top Frame variable value.
             Will throw exception, if empty, or not initialized. """
         try:
             return self.frames.Top().GetValue(name)
-        except:
-            raise Exception("Empty stackframe!")
+        except AttributeError:
+            raise Err.UndefinedFrameException("Empty stackframe!")
 
     def GetType(self, name):
         """ Returns top Frame variable type.
             Will throw exception, if empty, or not initialized. """
         try:
             return self.frames.Top().GetType(name)
-        except:
-            raise Exception("Empty stackframe!")
+        except AttributeError:
+            raise Err.UndefinedFrameException("Empty stackframe!")
 
     def Set(self, name, c):
         """ Initializes top Frame variable.
             Will throw exception, if does not exist. """
         try:
             self.frames.Top().Set(name, c)
-        except:
-            raise Exception("Empty stackframe!")
+        except AttributeError:
+            raise Err.UndefinedFrameException("Empty stackframe!")
 
     def __iter__(self):
         """ Makes StackFrame iterable. """
