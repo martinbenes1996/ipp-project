@@ -35,9 +35,8 @@ class Processor:
         try:
             instruction = self.reader.Decode()
             instruction()
-            Model.PrintModel()
         except Err.ProgramExitException:
-            print("Program exit!")
+            print("=== regular exit ===")
             return False
 
         return True
