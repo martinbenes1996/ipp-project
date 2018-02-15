@@ -61,7 +61,7 @@ class Run:
 
     def Pushs(self, item):
         """ Pushes value to the datastack. """
-        self.datastack.Push(val)
+        self.datastack.Push(item)
     def Pops(self):
         """ Pops and returns top item from the datastack. """
         try:
@@ -148,7 +148,7 @@ class Instruction:
         """ POPS operation. """
         global run
         val = run.Pops()
-        self.arg1.Set(val)
+        self.GetFrame(self.arg1).Set( self.arg1.GetName(), val )
 
     # operations
     def Add(self):
@@ -389,7 +389,7 @@ class Instruction:
 
         # PUSHS
         elif self.opcode == 'PUSHS':
-            self.ReadOperands(ParseConstant)
+            self.ReadOperands(self.ParseConstant)
             return self.Pushs
 
         # POPS
