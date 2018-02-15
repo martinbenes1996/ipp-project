@@ -147,14 +147,13 @@ class Instruction:
     def Pops(self):
         """ POPS operation. """
         global run
-        val = run.Pops()
-        self.GetFrame(self.arg1).Set( self.arg1.GetName(), val )
+        self.arg1.Set( run.Pops() )
 
     # operations
     def Add(self):
         """ ADD operation. """
         print(repr(self.arg2) + ' + ' + repr(self.arg3))
-        self.GetFrame(self.arg1).Set(self.arg2 + self.arg3)
+        self.arg1.Set( self.arg2 + self.arg3 )
     def Sub(self):
         """ SUB operation. """
         self.GetFrame(self.arg1).Set(self.arg2 - self.arg3)
@@ -195,7 +194,7 @@ class Instruction:
         pass
     def Write(self):
         """ WRITE operation. """
-        print( repr(self.GetVariable(self.arg1)) )
+        print( self.arg1.GetValue() )
 
     # string
     def Concatenate(self):
@@ -277,7 +276,7 @@ class Instruction:
         else:
             raise Err.SyntaxException('unsupported type')
 
-    def ParseVariable(self, obj):
+    def ParseNewVariable(self, obj):
         """ Parses constant (variable or constant) and returns it. """
         # type
         try: t = obj.attrib['type']
@@ -298,6 +297,11 @@ class Instruction:
             raise Err.OperandException('Variable expected: instruction ' + self.order)
         else:
             return Variable(varname.search(val).group(), loc.search(val).group())
+
+    def ParseVariable(self, obj):
+        v = self.ParseNewVariable(obj)
+        return self.GetFrame(v).GetVariable(v.GetName())
+
 
     def ParseLabel(self, obj):
         """ Parses label and returns its name. """
@@ -375,7 +379,7 @@ class Instruction:
 
         # DEFVAR
         elif self.opcode == 'DEFVAR':
-            self.ReadOperands(self.ParseVariable)
+            self.ReadOperands(self.ParseNewVariable)
             return self.DefVar
 
         # CALL

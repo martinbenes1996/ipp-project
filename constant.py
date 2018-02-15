@@ -113,33 +113,33 @@ class IntConstant(Constant):
     def __add__(self, c):
         """ ADD operation. """
         if c.GetType() == int:
-            return IntConstant(self.GetValue() + ic.GetValue())
+            return IntConstant(self.GetValue() + c.GetValue())
         elif c.GetType() == float:
-            return FloatConstant(float(self.GetValue()) + ic.GetValue())
+            return FloatConstant(float(self.GetValue()) + c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
     def __sub__(self, c):
         """ SUB operation. """
         if c.GetType() == int:
-            return IntConstant(self.GetValue() - ic.GetValue())
+            return IntConstant(self.GetValue() - c.GetValue())
         elif c.GetType() == float:
-            return FloatConstant(float(self.GetValue()) - ic.GetValue())
+            return FloatConstant(float(self.GetValue()) - c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
     def __mul__(self, c):
         """ MUL operation. """
         if c.GetType() == int:
-            return IntConstant(self.GetValue() * ic.GetValue())
+            return IntConstant(self.GetValue() * c.GetValue())
         elif c.GetType() == float:
-            return FloatConstant(float(self.GetValue()) * ic.GetValue())
+            return FloatConstant(float(self.GetValue()) * c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
     def __floordiv__(self, c):
         """ IDIV operation. """
         if c.GetType() == int:
-            return IntConstant(self.GetValue() // ic.GetValue())
+            return IntConstant(self.GetValue() // c.GetValue())
         elif c.GetType() == float:
-            return FloatConstant(float(self.GetValue()) // ic.GetValue())
+            return FloatConstant(float(self.GetValue()) // c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
     def __lt__(self, c):

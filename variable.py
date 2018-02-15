@@ -29,7 +29,6 @@ class Variable():
             self.value = Const.BoolConstant( c.GetValue() )
         else:
             raise Err.SemanticException('incompatible types')
-        print('create constant ' + repr(self.value))
 
     def GetType(self):
         """ Type getter. """
