@@ -152,7 +152,6 @@ class Instruction:
     # operations
     def Add(self):
         """ ADD operation. """
-        print(repr(self.arg2) + ' + ' + repr(self.arg3))
         self.arg1.Set( self.arg2 + self.arg3 )
     def Sub(self):
         """ SUB operation. """

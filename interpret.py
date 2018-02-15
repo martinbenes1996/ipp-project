@@ -41,7 +41,7 @@ def main():
 
     # error
     except Exception as e:
-        print(e)
+        print(e) # print to stderr
         sys.exit(e.GetCode())
 
     # ============================================ #

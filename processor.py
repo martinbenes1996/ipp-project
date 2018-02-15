@@ -28,7 +28,6 @@ class Processor:
         self.writer = Write.Writer(argv)
         # create reader
         self.reader = Read.Reader(self.src)
-        Model.PrintModel()
 
     def NextInstruction(self):
         """ Runs next instruction. """
