@@ -34,7 +34,10 @@ class Processor:
         """ Runs next instruction. """
         try:
             instruction = self.reader.Decode()
-            instruction()
+            try:
+                instruction()
+            except Err.MyException as e:
+                raise e.__class__("Instruction " + str(self.reader.GetPC()) + ": " + str(e))
         except Err.ProgramExitException:
             print("=== regular exit ===")
             return False

@@ -19,37 +19,45 @@ class Frame:
         """ Constructor of Frame. Represents Frame as Map. """
         self.vars = Structs.Map()
 
-    def DefVar(self, name):
-        """ Defines top Frame variable.
+    def DefVar(self, name, c):
+        """ Defines variable.
             Will throw exception, if exists. """
         try:
-            self.vars.Add(name)
+            self.vars.Add(name, c)
         except:
-            raise Exception("Variable" + name + "already exists!")
+            raise Exception("variable" + name + "already exists")
 
     def GetValue(self, name):
-        """ Returns top Frame variable value.
+        """ Returns variable value.
             Will throw exception, if not initialized. """
         try:
             return self.vars.Get(name).GetValue()
         except:
-            raise Exception("Variable " + name + " not initialized!")
+            raise Exception("variable " + name + " not initialized")
 
     def GetType(self, name):
-        """ Returns top Frame variable type.
+        """ Returns variable type.
             Will throw exception, if not initialized. """
         try:
             return self.vars.Get(name).GetType()
         except:
-            raise Exception("Variable " + name + " not initialized!")
+            raise Exception("variable " + name + " not initialized")
+
+    def GetVariable(self, name):
+        """ Returns variable.
+            Will throw exception, if does not exist. """
+        try:
+            return self.vars.Get(name)
+        except:
+            raise Exception("variable " + name + " not defined")
 
     def Set(self, name, c):
         """ Initializes top Frame variable.
             Will throw exception, if does not exist. """
         try:
-            self.vars.Update(name, c)
+            self.vars.Get(name).Set(c)
         except:
-            raise Exception("Variable " + name + " not defined!")
+            raise Exception("variable " + name + " not defined!")
 
     def __iter__(self):
         """ Makes Frame iterable. """
@@ -83,11 +91,11 @@ class StackFrame(Frame):
         except IndexError:
             raise Err.UndefinedFrameException("Empty stackframe!")
 
-    def DefVar(self, name):
+    def DefVar(self, name, c):
         """ Creates new top Frame variable.
             Will throw exception, if empty. """
         try:
-            self.frames.Top().DefVar(name)
+            self.frames.Top().DefVar(name, c)
         except AttributeError:
             raise Err.UndefinedFrameException("Empty stackframe!")
 
@@ -107,6 +115,14 @@ class StackFrame(Frame):
             return self.frames.Top().GetType(name)
         except AttributeError:
             raise Err.UndefinedFrameException("Empty stackframe!")
+
+    def GetVariable(self, name):
+        """ Returns top Frame variable.
+            Will throw exception, if does not exist. """
+        try:
+            return self.frames.Top().GetVariable(name)
+        except:
+            raise Exception("Empty stackframe!")
 
     def Set(self, name, c):
         """ Initializes top Frame variable.

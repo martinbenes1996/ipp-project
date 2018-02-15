@@ -14,27 +14,38 @@ import error as Err
 
 class Variable():
     """ Class, that extends constant (value) to variable (may be changed). """
-    def __init__(self):
+    def __init__(self, name, loc):
         self.value = Const.Constant(None)
+        self.name = name
+        self.loc = loc
 
     def Set(self, c):
         """ Moves value and type of given constant to the variable. """
         if c.GetType() == int:
-            self.value = IntConstant( c.GetValue() )
+            self.value = Const.IntConstant( c.GetValue() )
         elif c.GetType() == str:
-            self.value = StringConstant( c.GetValue() )
+            self.value = Const.StringConstant( c.GetValue() )
         elif c.GetType() == bool:
-            self.value = BoolConstant( c.GetValue() )
+            self.value = Const.BoolConstant( c.GetValue() )
         else:
             raise Err.SemanticException('incompatible types')
 
-    def GetType():
+    def GetType(self):
         """ Type getter. """
         return self.value.GetType()
 
-    def GetValue():
+    def GetValue(self):
         """ Value getter. """
         return self.value.GetValue()
+
+    def GetLocation(self):
+        """ Location getter. """
+        return self.loc
+
+    def GetName(self):
+        """ Name getter. """
+        return self.name
+
 
 
     def __add__(self, c):

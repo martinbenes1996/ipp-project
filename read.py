@@ -98,10 +98,24 @@ class Instruction:
         self.obj = obj
 
 
+    def GetFrame(self, var):
+        if var.GetLocation() == 'GF':
+            return Model.GF
+        elif var.GetLocation() == 'LF':
+            return Model.LF
+        elif var.GetLocation() == 'TF':
+            return Model.TF
+        else:
+            raise Err.UndefinedFrameException('unknown frame')
+
+    def GetVariable(self, var):
+        self.GetFrame(var).GetVariable(var.GetName())
+
     # frames, function calls
     def Move(self):
         """ MOVE operation. """
-        self.arg1.Set(self.arg2)
+        self.GetFrame(self.arg1).Set( self.arg1.GetName(), self.arg2 )
+
     def CreateFrame(self):
         """ CREATEFRAME operation. """
         Model.CreateFrame()
@@ -110,15 +124,10 @@ class Instruction:
         Model.PushFrame()
     def PopFrame(self):
         """ POPFRAME operation. """
-        Model.CreateFrame()
+        Model.PopFrame()
     def DefVar(self):
         """ DEFVAR operation. """
-        if self.arg1.GetLocation() == 'GF':
-            Model.GF.DefVar( self.arg1.GetName() )
-        elif self.arg1.GetLocation() == 'LF':
-            Model.LF.DefVar( self.arg1.GetName() )
-        elif self.arg1.GetLocation() == 'TF':
-            Model.TF.DefVar( self.arg1.GetName() )
+        self.GetFrame(self.arg1).DefVar( self.arg1.GetName(), self.arg1 )
     def Call(self):
         """ CALL operation. """
         global run
@@ -185,7 +194,7 @@ class Instruction:
         pass
     def Write(self):
         """ WRITE operation. """
-        print( repr(self.arg1) )
+        print( repr(self.GetVariable(self.arg1)) )
 
     # string
     def Concatenate(self):
@@ -278,8 +287,8 @@ class Instruction:
         except: raise XMLException('No text in instruction'+self.order)
 
         # name and location
-        varname = re.compile(r'^(?<=((LF)|(GF)|(TF))@)[-a-zA-Z_$&%*]+$')
-        loc = re.compile(r'^((LF)|(GF)|(TF))(?=@[-a-zA-Z_$&%*]+)$')
+        varname = re.compile(r'(?<=^((LF)|(GF)|(TF))@)[-a-zA-Z_$&%*]+$')
+        loc = re.compile(r'^((LF)|(GF)|(TF))(?=@[-a-zA-Z_$&%*]+$)')
         if varname.search(val) is None or loc.search(val) is None:
             raise Err.SyntaxException("Variable name expected: instruction "+self.order)
 
@@ -287,7 +296,7 @@ class Instruction:
         if t != 'var':
             raise Err.OperandException('Variable expected: instruction ' + self.order)
         else:
-            return Variable()
+            return Variable(varname.search(val).group(), loc.search(val).group())
 
     def ParseLabel(self, obj):
         """ Parses label and returns its name. """
@@ -541,5 +550,10 @@ class Reader:
             raise Err.ProgramExitException()
 
         i = Instruction( self.root[run.GetPC()] )
+        print(i.opcode)
         run.IncrementPC()
         return i.Decode()
+
+    def GetPC(self):
+        global run
+        return run.GetPC()

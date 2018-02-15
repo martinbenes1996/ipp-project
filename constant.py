@@ -81,7 +81,11 @@ class Constant:
         return "Constant: " + repr(self)
     def __repr__(self):
         """ Makes Constant representable as str. """
-        return str(self.GetValue())
+        if self.value == None:
+            return '(None)'
+        else:
+            return str(self.GetValue())
+
 
 class IntConstant(Constant):
     """ This is IntConstant class. """
@@ -157,6 +161,10 @@ class IntConstant(Constant):
         else:
             raise Err.SemanticException('incompatible types')
 
+    def __repr__(self):
+        """ Makes Constant representable as str. """
+        return super().__repr__() + ' (int)'
+
 
 class BoolConstant(Constant):
     """ This is BoolConstant class. """
@@ -196,6 +204,11 @@ class BoolConstant(Constant):
     def __not__(self):
         """ NOT operation. """
         return BoolConstant(not self.GetValue())
+
+    def __repr__(self):
+        """ Makes Constant representable as str. """
+        return super().__repr__() + ' (bool)'
+
 
 class StringConstant(Constant):
     """ This is StringConstant class. """
@@ -242,4 +255,8 @@ class StringConstant(Constant):
             else:
                 raise Err.StringException('index out of range')
         else:
-            raise Err.SematnicException('incompatible types')
+            raise Err.SemanticException('incompatible types')
+
+    def __repr__(self):
+        """ Makes Constant representable as str. """
+        return super().__repr__() + ' (string)'

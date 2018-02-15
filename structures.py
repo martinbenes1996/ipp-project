@@ -11,6 +11,8 @@ Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
+import error as Err
+
 class Stack:
     """ This is Stack class. """
 
@@ -32,7 +34,10 @@ class Stack:
     def Top(self):
         """ Returns top item.
             Will throw exception, if empty. """
-        return self.data[-1]
+        try:
+            return self.data[-1]
+        except:
+            raise Err.UndefinedFrameException('empty framestack')
 
     def __iter__(self):
         """ Makes Stack iterable. """
@@ -53,11 +58,11 @@ class Map:
         """ Constructor. Creates map as a dict. """
         self.data = dict()
 
-    def Add(self, key):
+    def Add(self, key, val):
         """ Adds key, sets to None.
             Will throw exception, if the key exists. """
         if key not in self.data:
-            self.data[key] = None
+            self.data[key] = val
         else:
             raise Exception()
 
@@ -81,8 +86,7 @@ class Map:
         """ Returns data.
             Will throw exception, if key is not initialized. """
         if key in self.data:
-            if self.data[key] is not None:
-                return self.data[key]
+            return self.data[key]
         # otherwise
         raise Exception()
 
@@ -91,7 +95,10 @@ class Map:
         return iter(self.data)
     def __repr__(self):
         """ Makes Map representable as str. """
-        return ', '.join(self.data.keys())
+        s = ''
+        for k in self.data:
+            s += '[' + k + ': ' + repr(self.data[k])+ ']'
+        return s #', '.join(self.data.keys())
     def __str__(self):
         """ Makes Map printable. """
         return "Map: " + repr(self)
