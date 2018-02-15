@@ -153,40 +153,41 @@ class Instruction:
     # operations
     def Add(self):
         """ ADD operation. """
-        self.arg1.Set(self.arg2 + self.arg3)
+        print(repr(self.arg2) + ' + ' + repr(self.arg3))
+        self.GetFrame(self.arg1).Set(self.arg2 + self.arg3)
     def Sub(self):
         """ SUB operation. """
-        self.arg1.Set(self.arg2 - self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 - self.arg3)
     def Mul(self):
         """ MUL operation. """
-        self.arg1.Set(self.arg2 * self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 * self.arg3)
     def IDiv(self):
         """ IDIV operation. """
-        self.arg1.Set(self.arg2 // self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 // self.arg3)
     def Lt(self):
         """ LT operation. """
-        self.arg1.Set(self.arg2 > self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 > self.arg3)
     def Gt(self):
         """ GT operation. """
-        self.arg1.Set(self.arg2 < self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 < self.arg3)
     def Eq(self):
         """ EQ operation. """
-        self.arg1.Set(self.arg2 == self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 == self.arg3)
     def And(self):
         """ AND operation. """
-        self.arg1.Set(self.arg2 and self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 and self.arg3)
     def Or(self):
         """ OR operation. """
-        self.arg1.Set(self.arg2 or self.arg3)
+        self.GetFrame(self.arg1).Set(self.arg2 or self.arg3)
     def Not(self):
         """ NOT operation"""
-        self.arg1.Set(not self.arg2)
+        self.GetFrame(self.arg1).Set(not self.arg2)
     def Int2Char(self):
         """ INT2CHAR operation. """
-        self.arg1.Set(self.arg2.ToString())
+        self.GetFrame(self.arg1).Set(self.arg2.ToString())
     def StrI2Int(self):
         """ STRI2INT operation. """
-        self.arg1.Set(self.arg2.ToInt())
+        self.GetFrame(self.arg1).Set(self.arg2.ToInt())
 
     # IO
     def Read(self):                                                             #TODO
@@ -199,13 +200,13 @@ class Instruction:
     # string
     def Concatenate(self):
         """ CONCAT operation. """
-        self.arg1.Set(self.arg2.Concatenate(self.arg3))
+        self.GetFrame(self.arg1).Set(self.arg2.Concatenate(self.arg3))
     def StrLen(self):
         """ STRLEN operation. """
-        self.arg1.Set(len(self.arg2))
+        self.GetFrame(self.arg1).Set(len(self.arg2))
     def GetChar(self):
         """ GETCHAR operation. """
-        self.arg1.Set(self.arg2[self.arg3])
+        self.GetFrame(self.arg1).Set(self.arg2[self.arg3])
     def SetChar(self):
         """ SETCHAR operation. """
         self.arg1[self.arg2] = self.arg3
