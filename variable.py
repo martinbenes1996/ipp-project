@@ -33,6 +33,9 @@ class Variable():
     def GetType(self):
         """ Type getter. """
         return self.value.GetType()
+    def Type(self):
+        """ Returns string of type. """
+        return self.value.Type()
 
     def GetValue(self):
         """ Value getter. """

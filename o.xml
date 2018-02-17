@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<program language="IPPcode18">
-	<instruction order="1" opcode="BREAK">
-	</instruction>
-</program>

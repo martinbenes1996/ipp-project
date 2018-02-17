@@ -23,9 +23,9 @@ class Run:
     def GetPC(self):
         """ Program counter getter."""
         return self.pc
-    def SetPC(self, ic):
+    def SetPC(self, pc):
         """ Program counter setter. """
-        self.ic = pc
+        self.pc = pc
     def IncrementPC(self):
         """ Increments program counter. """
         self.pc += 1
@@ -114,7 +114,7 @@ class Instruction:
     # frames, function calls
     def Move(self):
         """ MOVE operation. """
-        self.GetFrame(self.arg1).Set( self.arg1.GetName(), self.arg2 )
+        self.arg1.Set(self.arg2)
 
     def CreateFrame(self):
         """ CREATEFRAME operation. """
@@ -155,37 +155,37 @@ class Instruction:
         self.arg1.Set( self.arg2 + self.arg3 )
     def Sub(self):
         """ SUB operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 - self.arg3)
+        self.arg1.Set( self.arg2 - self.arg3 )
     def Mul(self):
         """ MUL operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 * self.arg3)
+        self.arg1.Set( self.arg2 * self.arg3 )
     def IDiv(self):
         """ IDIV operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 // self.arg3)
+        self.arg1.Set( self.arg2 // self.arg3 )
     def Lt(self):
         """ LT operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 > self.arg3)
+        self.arg1.Set( self.arg2 < self.arg3 )
     def Gt(self):
         """ GT operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 < self.arg3)
+        self.arg1.Set( self.arg2 > self.arg3 )
     def Eq(self):
         """ EQ operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 == self.arg3)
+        self.arg1.Set( self.arg2 == self.arg3 )
     def And(self):
         """ AND operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 and self.arg3)
+        self.arg1.Set( self.arg2 and self.arg3 )
     def Or(self):
         """ OR operation. """
-        self.GetFrame(self.arg1).Set(self.arg2 or self.arg3)
+        self.arg1.Set( self.arg2 or self.arg3 )
     def Not(self):
         """ NOT operation"""
-        self.GetFrame(self.arg1).Set(not self.arg2)
+        self.arg1.Set( not self.arg2 )
     def Int2Char(self):
         """ INT2CHAR operation. """
-        self.GetFrame(self.arg1).Set(self.arg2.ToString())
+        self.arg1.Set( self.arg2.ToString() )
     def StrI2Int(self):
         """ STRI2INT operation. """
-        self.GetFrame(self.arg1).Set(self.arg2.ToInt())
+        self.arg1.Set( self.arg2.ToInt() )
 
     # IO
     def Read(self):                                                             #TODO
@@ -210,15 +210,15 @@ class Instruction:
         self.arg1[self.arg2] = self.arg3
 
     # types
-    def Type(self):                                                             #TODO
+    def Type(self):
         """ TYPE operation. """
-        pass
+        self.arg1.Set( StringConstant(self.arg2.Type()) )
 
     # control instruction
     def Label(self):
         """ LABEL operation. """
         global run
-        run.AddLabel(self.arg1, run.GetIC()-1)
+        run.AddLabel(self.arg1, run.GetPC()-1)
     def Jump(self):
         """ JUMP operation. """
         global run

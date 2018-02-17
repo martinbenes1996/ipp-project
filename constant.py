@@ -30,6 +30,9 @@ class Constant:
     def GetType(self):
         """ Returns type. """
         return None
+    def Type(self):
+        """ Returns string of type. """
+        raise Err.SemanticException('invalid operation')
 
     def ToString(self):
         """ INT2CHAR operation. """
@@ -82,10 +85,51 @@ class Constant:
     def __repr__(self):
         """ Makes Constant representable as str. """
         if self.value == None:
-            return '(None)'
+            return 'None'
         else:
             return str(self.GetValue())
 
+class BoolConstant(Constant):
+    """ This is BoolConstant class. """
+
+    def __init__(self, value):
+        """ Constructor of BoolConstant class. """
+        if type(value) == bool:
+            super().__init__(value)
+        else:
+            if value == 'true': super().__init__( True )
+            elif value == 'false': super().__init__( False )
+            else:
+                raise Err.SemanticException('bool value expected')
+
+    def GetType(self):
+        """ Type getter. """
+        return bool
+    def Type(self):
+        """ Returns string of type. """
+        return 'bool'
+
+    def __lt__(self, c):
+        """ LT operation. """
+        if c.GetType() == bool:
+            return BoolConstant(not self.GetValue() and c.GetValue())
+        else:
+            raise Err.SemanticException('incompatible types')
+    def __gt__(self, c):
+        """ GT operation. """
+        if c.GetType() == bool:
+            return BoolConstant(self.GetValue() and not c.GetValue())
+        else:
+            raise Err.SemanticException('incompatible types')
+    def __eq__(self, c):
+        """ EQ operation. """
+        if c.GetType() == bool:
+            return BoolConstant(self.GetValue() == c.GetValue())
+        else:
+            raise Err.SemanticException('incompatible types')
+    def __not__(self):
+        """ NOT operation. """
+        return BoolConstant(not self.GetValue())
 
 class IntConstant(Constant):
     """ This is IntConstant class. """
@@ -103,6 +147,9 @@ class IntConstant(Constant):
     def GetType(self):
         """ Type getter. """
         return int
+    def Type(self):
+        """ Returns string of type. """
+        return 'int'
 
     def ToString():
         try:
@@ -145,69 +192,21 @@ class IntConstant(Constant):
     def __lt__(self, c):
         """ LT operation. """
         if c.GetType() == int or c.GetType() == float:
-            return self.GetValue() < c.GetValue()
+            return BoolConstant(self.GetValue() < c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
     def __gt__(self, c):
         """ GT operation. """
         if c.GetType() == int or c.GetType() == float:
-            return self.GetValue() > c.GetValue()
+            return BoolConstant(self.GetValue() > c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
     def __eq__(self, c):
         """ EQ operation. """
         if c.GetType() == int or c.GetType() == float:
-            return self.GetValue() == c.GetValue()
-        else:
-            raise Err.SemanticException('incompatible types')
-
-    def __repr__(self):
-        """ Makes Constant representable as str. """
-        return super().__repr__() + ' (int)'
-
-
-class BoolConstant(Constant):
-    """ This is BoolConstant class. """
-
-    def __init__(self, value):
-        """ Constructor of BoolConstant class. """
-        if type(value) == bool:
-            super().__init__(value)
-        else:
-            if value == 'true': super().__init__( True )
-            elif value == 'false': super().__init__( False )
-            else:
-                raise Err.SemanticException('bool value expected')
-
-    def GetType(self):
-        """ Type getter. """
-        return bool
-
-    def __lt__(self, c):
-        """ LT operation. """
-        if c.GetType() == bool:
-            return BoolConstant(not self.GetValue() and c.GetValue())
-        else:
-            raise Err.SemanticException('incompatible types')
-    def __gt__(self, c):
-        """ GT operation. """
-        if c.GetType() == bool:
-            return BoolConstant(self.GetValue() and not c.GetValue())
-        else:
-            raise Err.SemanticException('incompatible types')
-    def __eq__(self, c):
-        """ EQ operation. """
-        if c.GetType() == bool:
             return BoolConstant(self.GetValue() == c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
-    def __not__(self):
-        """ NOT operation. """
-        return BoolConstant(not self.GetValue())
-
-    def __repr__(self):
-        """ Makes Constant representable as str. """
-        return super().__repr__() + ' (bool)'
 
 
 class StringConstant(Constant):
@@ -223,6 +222,9 @@ class StringConstant(Constant):
     def GetType(self):
         """ Type getter. """
         return str
+    def Type(self):
+        """ Returns string of type. """
+        return 'string'
 
     def Concatenate(self, c):
         """ CONCAT method. """
@@ -259,4 +261,4 @@ class StringConstant(Constant):
 
     def __repr__(self):
         """ Makes Constant representable as str. """
-        return super().__repr__() + ' (string)'
+        return '\'' + super().__repr__() + '\''
