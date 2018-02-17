@@ -12,7 +12,7 @@
  * @copyright Martin Benes (c) 2018
  */
 
-include 'analyse.php'; // Compiler, FileWriter
+include 'parse_compiler.php'; // Compiler, FileWriter
 
 /**
  * Error stream.

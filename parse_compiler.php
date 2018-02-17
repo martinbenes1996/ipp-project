@@ -7,13 +7,14 @@
  * of IPPcode18 and its transcription to XML. It contains only Compiler
  * class.
  *
- * @package analyse.php
+ * @package parse_compiler.php
  * @author xbenes49
  * @copyright Martin Benes (c) 2018
  */
 
 
-include 'defs.php'; // Argument, Instruction, FileReader, FileWriter
+include 'io.php'; // FileReader, FileWriter
+include 'parse_model.php'; // Argument, Instruction
 
 /**
  * Compiler class.
@@ -23,7 +24,7 @@ include 'defs.php'; // Argument, Instruction, FileReader, FileWriter
  * including creating input and output streams, reading from them,
  * as same as generating XML, independently on any library.
  *
- * @package analyse.php
+ * @package parse_compiler.php
  * @subpackage Compiler
  * @uses FileReader, FileWriter
  */
