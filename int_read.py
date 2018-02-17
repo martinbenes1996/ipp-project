@@ -1,14 +1,26 @@
 
+"""
+Read module
+
+This module contains the class Reader, which reads XML and generates objects
+of class Instruction. They decode instruction and returns the method,
+a representation of execution phase of the instruction.
+
+Package: int_read.py
+Author: xbenes49
+Copyright: Martin Benes (c) 2018
+"""
+
 import re
 import sys
 import xml.etree.ElementTree as ET
 
-import error as Err
-import model as Model
-import structures as Struct
+import int_error as Err
+import int_model as Model
+import int_structures as Struct
 
-from constant import *
-from variable import *
+from int_constant import *
+from int_variable import *
 
 class Run:
     """ This is Run class. """

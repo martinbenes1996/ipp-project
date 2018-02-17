@@ -4,13 +4,13 @@ Frame module
 
 This module implements classes for Model module.
 
-Package: frame.py
+Package: int_frame.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
-import structures as Structs # Map, Stack
-import error as Err
+import int_structures as Structs # Map, Stack
+import int_error as Err
 
 class Frame:
     """ This is Frame class. """

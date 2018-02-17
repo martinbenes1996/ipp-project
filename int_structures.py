@@ -6,12 +6,12 @@ This module contains the most low-level classes, used as data containers.
 It is needed, because the Exceptions are raised, when a certain operations
 are done in certain state of data.
 
-Package: structures.py
+Package: int_structures.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
-import error as Err
+import int_error as Err
 
 class Stack:
     """ This is Stack class. """

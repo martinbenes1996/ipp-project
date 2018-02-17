@@ -10,9 +10,10 @@ Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
-import processor as Proc
 import sys # exit
-import error as Err # exceptions
+
+import int_error as Err # exceptions
+import int_processor as Proc
 
 def main():
     """ Main function. """

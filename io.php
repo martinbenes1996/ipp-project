@@ -15,7 +15,7 @@
  * File class.
  *
  * This class represents file descriptor.
- * @package defs.php
+ * @package io.php
  * @subpackage IO
  * @abstract
  */
@@ -36,7 +36,7 @@ class File
   /**
    * Constructor of File class.
    *
-   * This methods opens file, given by name, as type ('r', 'w', ...).
+   * This method opens file, given by name, as type ('r', 'w', ...).
    * It can't be directly called., because the class is abstract.
    * @access protected
    * @param string name      Name of file.
@@ -135,6 +135,34 @@ class FileWriter extends File
    * @param string str       Line to write.
    */
   function write($str) { return fputs($this->handle, $str); }
+}
+
+class TmpFile
+{
+  private $name = "";
+  private $reader = null;
+
+  public function __construct()
+  {
+    $this->name = tmpnam(".", "");
+    $this->reader = FileReader($this->name);
+  }
+  public function __destruct()
+  {
+    unlink($name);
+  }
+
+  public function read()
+  {
+    $s = "";
+    while(($l == $this->reader->read()) != false)
+    {
+      $s = $s . $l;
+    }
+    return $s;
+  }
+
+  public function GetName() { return $this->name; }
 }
 
 /* ============================================================== */

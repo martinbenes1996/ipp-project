@@ -12,12 +12,14 @@
  */
 
 include 'test_config.php'; // TestConfiguration, FileWriter
+include 'test_controller.php'; // HTML Generator
 
 /**
  * Error stream.
  * @var FileWriter
  */
 $ErrOut = new FileWriter('php://stderr');
+$g = new HTMLGenerator();
 
 /* -------- ARGS --------- */
 try {
@@ -38,5 +40,7 @@ try {
   exit(10);
 }
 /* ----------------------- */
+
+$g->GenerateTestReport();
 
 // ==================================================

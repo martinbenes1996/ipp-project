@@ -52,6 +52,10 @@ class TestConfiguration
   private $given = array( "parse-script" => False, "int-script" => False );
   /* ------------------------- */
 
+  /* ---------- GETTERS --------- */
+  public function GetParse() { return $this->test_dir . '/' . $this->files["parse-script"]; }
+  public function GetInterpret() { return $this->test_dir . '/' . $this->files["int-script"]; }
+
   /**
    * Constructor of Configuration object.
    *

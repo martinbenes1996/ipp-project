@@ -1,4 +1,13 @@
 
+"""
+Error module.
+
+This module includes Exception classes.
+
+Package: int_rror.py
+Author: xbenes49
+Copyright: Martin Benes (c) 2018
+"""
 
 
 class NonErrorException(Exception):
@@ -31,7 +40,7 @@ class MyException(Exception):
         return self.msg
     def GetCode(self):
         return self.code
-        
+
 
 class ParameterException(MyException):
     def __init__(self, msg):

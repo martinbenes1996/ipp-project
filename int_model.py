@@ -4,13 +4,13 @@ Model module.
 
 This module is an interface for Model operations (with Frames etc.).
 
-Package: model.py
+Package: int_model.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
-import frame as Types # Frame, StackFrame
-import error as Err # exceptions
+import int_frame as Types # Frame, StackFrame
+import int_error as Err # exceptions
 
 TF = None # Frame
 GF = Types.Frame() # Frame

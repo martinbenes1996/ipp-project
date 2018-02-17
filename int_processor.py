@@ -4,7 +4,7 @@ Processor module.
 
 This module implements the core of interpret.
 
-Package: processor.py
+Package: int_processor.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
@@ -12,10 +12,9 @@ Copyright: Martin Benes (c) 2018
 # system
 import re # Regex
 # user
-import read as Read # Reader
-import write as Write # Writer
-import error as Err
-import model as Model
+import int_read as Read # Reader
+import int_error as Err
+import int_model as Model
 
 class Processor:
     """ This is Processor class. """
@@ -24,8 +23,6 @@ class Processor:
         """ Constructor of Processor. Initializes the parts of system. """
         self.ProcessArguments(argv)
 
-        # create writer
-        self.writer = Write.Writer(argv)
         # create reader
         self.reader = Read.Reader(self.src)
 

@@ -5,12 +5,12 @@ Constant module
 This module implements constants as arguments and data containers
 for Variable objects.
 
-Package: constant.py
+Package: int_constant.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
-import error as Err
+import int_error as Err
 
 class Constant:
     """ This is Constant class. """

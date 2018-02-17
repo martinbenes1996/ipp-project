@@ -4,13 +4,13 @@ Variable module
 
 This module implements Variable and its operations.
 
-Package: variable.py
+Package: int_variable.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
 
-import constant as Const
-import error as Err
+import int_constant as Const
+import int_error as Err
 
 class Variable():
     """ Class, that extends constant (value) to variable (may be changed). """
