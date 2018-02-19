@@ -10,7 +10,7 @@
  * @copyright Martin Benes (c) 2018
  */
 
-include 'test_config.php'; // TestConfiguration
+include 'test_config.php'; // TestConfiguration, FileReader
 include 'test_generator.php'; // HTMLGenerator
 
 
@@ -94,7 +94,7 @@ class Program
    * @access public
    * @param string program  Program filename.
    */
-  public function RunTest($name)
+  public function RunTest($name, $input)
   {
     // result record
     $r = new TestResult();
@@ -112,8 +112,8 @@ class Program
         $out_str, $pcode);
 
     // parse
-    $r->SetParseOut($pout->read());
-    $r->SetParseErr($perr->read());
+    $r->SetParseOut($pout->get());
+    $r->SetParseErr($perr->get());
     $r->SetParseCode(intval($pcode));
 
 
@@ -124,13 +124,14 @@ class Program
 
     // run interpret
     exec('python3.5 '.$this->interpret.' --source='.$pout->GetName()
+                              .' < '.$input
                               .' > '.$iout->GetName()
                               .' 2> '.$ierr->GetName(),
         $out_str, $icode);
 
     // parse
-    $r->SetIntOut($iout->read());
-    $r->SetIntErr($ierr->read());
+    $r->SetIntOut($iout->get());
+    $r->SetIntErr($ierr->get());
     $r->SetIntCode(intval($icode));
 
 
@@ -149,13 +150,28 @@ class TestSet
     $this->tests = $tests;
   }
 
+  private function CheckFile($rather, $otherwise)
+  {
+    if(file_exists($rather))
+    {
+      return $rather;
+    }
+    else
+    {
+      return $otherwise;
+    }
+  }
+
   public function Launch($program)
   {
     $generator = new HTMLGenerator();
     $a = array();
     foreach($this->tests as $t)
     {
-      $result = $program->RunTest( $t.'.src' );
+      // input
+      $input = $this->CheckFile($t.'.in', '/dev/null');
+      // test
+      $result = $program->RunTest( $t.'.src', $input );
       $result->SetTestName( $t.'.src' );
 
       // parse error
@@ -176,8 +192,41 @@ class TestSet
         // OK
         else
         {
-          $result->SetErrorMessage("-");
-          $result->SetStatus(True);
+          // check output
+          $f = new FileReader( $this->CheckFile( $t.'.out', '/dev/null') );
+          /*
+          echo "strcmp ".strcmp($result->GetIntOut(), $f->get())."\n";
+
+          echo "HAVE:";
+          $a = unpack('C*', $result->GetIntOut());
+          foreach($a as $i)
+          {
+            echo $i." ";
+          }
+          echo "\n";
+
+          echo gettype($f->get())."\n";
+          echo "WANT:";
+          $a = unpack('C*', $f->get());
+          foreach($a as $i)
+          {
+            echo $i." ";
+          }
+          echo "\n";
+          */
+
+
+          if( strcmp($result->GetIntOut(), $f->get()) != 0 )
+          {
+            $result->SetErrorMessage("Output not correct.");
+            $result->SetStatus(False);
+          }
+          else
+          {
+            $result->SetErrorMessage("-");
+            $result->SetStatus(True);
+          }
+
         }
       }
 

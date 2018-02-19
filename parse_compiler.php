@@ -139,7 +139,12 @@ class Compiler
   {
 
     // read
-    if( (($str = $this->in->read()) == false) || $this->in->eof()) return False; // EOF check
+    if(($str = $this->in->read()) == false)
+    {
+      if($this->in->eof()) return False; // EOF check
+      else return True;
+    }
+
 
     // generate instruction
     $i = $this->GenerateInstruction($str);

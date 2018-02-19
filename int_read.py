@@ -116,6 +116,8 @@ class Instruction:
         elif var.GetLocation() == 'LF':
             return Model.LF
         elif var.GetLocation() == 'TF':
+            if Model.TF == None:
+                raise Err.UndefinedFrameException("TF not defined.")
             return Model.TF
         else:
             raise Err.UndefinedFrameException('unknown frame')
@@ -205,7 +207,7 @@ class Instruction:
         pass
     def Write(self):
         """ WRITE operation. """
-        print( self.arg1.GetValue() )
+        print( self.arg1.GetValue(), end='')
 
     # string
     def Concatenate(self):
@@ -566,7 +568,6 @@ class Reader:
             raise Err.ProgramExitException()
 
         i = Instruction( self.root[run.GetPC()] )
-        print(i.opcode)
         run.IncrementPC()
         return i.Decode()
 

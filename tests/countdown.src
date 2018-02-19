@@ -1,0 +1,12 @@
+.IPPcode18
+
+DEFVAR GF@x
+MOVE GF@x int@9
+
+LABEL before
+WRITE GF@x
+SUB GF@x GF@x int@1
+
+JUMPIFNEQ before GF@x int@0
+
+WRITE string@\x0a

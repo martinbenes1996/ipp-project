@@ -35,7 +35,6 @@ class Processor:
             except Err.MyException as e:
                 raise e.__class__("Instruction " + str(self.reader.GetPC()) + ": " + str(e))
         except Err.ProgramExitException:
-            print("=== regular exit ===")
             return False
 
         return True
@@ -63,7 +62,6 @@ class Processor:
                 raise Err.ParameterException("Unknown parameter " + a + "!")
 
         if self.src is None:
-            print("Error")
             raise Err.ParameterException('--source=file parameter missing.')
 
     def PrintHelp(self):

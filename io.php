@@ -102,11 +102,19 @@ class FileReader extends File
    * @return string         Input line.
    */
   public function read() { return trim(fgets($this->handle)); }
+  public function read_raw() { return fgets($this->handle); }
+  public function get()
+  {
+    $s = "";
+    while(($l = $this->read_raw()) != false)
+    {
+      $s = $s . $l;
+    }
+    return $s;
+  }
+
 
 }
-
-
-
 
 /**
  * FileWriter class.
@@ -152,14 +160,9 @@ class TmpFile
     unlink($this->name);
   }
 
-  public function read()
+  public function get()
   {
-    $s = "";
-    while(($l = $this->reader->read()) != false)
-    {
-      $s = $s . $l;
-    }
-    return $s;
+    return $this->reader->get();
   }
 
   public function GetName() { return $this->name; }
