@@ -10,10 +10,11 @@
  * @copyright Martin Benes (c) 2018
  */
 
-include 'test_config.php';
+include 'test_config.php'; // TestConfiguration
+include 'test_generator.php'; // HTMLGenerator
 
 
-class Result
+class TestResult
 {
   private $parse_out = "";
   private $parse_err = "";
@@ -21,16 +22,19 @@ class Result
   private $int_out = "";
   private $int_err = "";
   private $int_code = 0;
-
   private $test_name = "";
+  private $err_msg = "";
+  private $stat = True;
 
   public function SetParseOut($out) { $this->parse_out = $out; }
   public function SetParseErr($err) { $this->parse_err = $err; }
-  public function SetParseCode($code) { $this->parse_code = intval($code); }
+  public function SetParseCode($code) { $this->parse_code = $code; }
   public function SetIntOut($out) { $this->int_out = $out; }
   public function SetIntErr($err) { $this->int_err = $err; }
-  public function SetIntCode($code) { $this->int_code = intval($code); }
+  public function SetIntCode($code) { $this->int_code = $code; }
   public function SetTestName($name) { $this->test_name = $name; }
+  public function SetErrorMessage($msg) { $this->err_msg = $msg; }
+  public function SetStatus($stat) { $this->stat = $stat; }
 
   public function GetParseOut() { return $this->parse_out; }
   public function GetParseErr() { return $this->parse_err; }
@@ -39,6 +43,8 @@ class Result
   public function GetIntErr() { return $this->int_err; }
   public function GetIntCode() { return $this->int_code; }
   public function GetTestName() { return $this->test_name; }
+  public function GetErrorMessage() { return $this->err_msg; }
+  public function GetStatus() { return $this->stat; }
 
 
 }
@@ -84,52 +90,103 @@ class Program
 
   /**
    * Runs given program using inner parser and interpret.
-   * Returns Result object.
+   * Returns TestResult object.
    * @access public
    * @param string program  Program filename.
    */
   public function RunTest($name)
   {
     // result record
-    $r = new Result();
+    $r = new TestResult();
 
 
     /* ------------- PARSE --------------- */
     // tmp files
-    $out = new TmpFile();
-    $err = new TmpFile();
+    $pout = new TmpFile();
+    $perr = new TmpFile();
 
     // run parse
-    exec('./'.$this->parse.' < '.$name
-                          .' > '.$out->GetName()
-                          .' 2> '.$err->GetName(),
-        $out_str, $code);
+    exec('php '.$this->parse.' < '.$name
+                          .' > '.$pout->GetName()
+                          .' 2> '.$perr->GetName(),
+        $out_str, $pcode);
 
     // parse
-    $r->SetParseOut($out->read());
-    $r->SetParseErr($err->read());
-    $r->SetParseCode($code);
+    $r->SetParseOut($pout->read());
+    $r->SetParseErr($perr->read());
+    $r->SetParseCode(intval($pcode));
 
 
     /* ------------- INTERPRET ------------- */
     // tmp files
-    $out = new TmpFile();
-    $err = new TmpFile();
+    $iout = new TmpFile();
+    $ierr = new TmpFile();
 
     // run interpret
-    exec('./'.$this->interpret.' --source='.$name
-                              .' > '.$out->GetName()
-                              .' 2> '.$err->GetName(),
-        $out_str, $code);
+    exec('python3.5 '.$this->interpret.' --source='.$pout->GetName()
+                              .' > '.$iout->GetName()
+                              .' 2> '.$ierr->GetName(),
+        $out_str, $icode);
 
     // parse
-    $r->SetIntOut($out->read());
-    $r->SetIntErr($err->read());
-    $r->SetIntCode($code);
+    $r->SetIntOut($iout->read());
+    $r->SetIntErr($ierr->read());
+    $r->SetIntCode(intval($icode));
 
 
     /* ------------------------------------- */
     return $r;
   }
+
+}
+
+class TestSet
+{
+  private $tests = array();
+
+  public function __construct($tests)
+  {
+    $this->tests = $tests;
+  }
+
+  public function Launch($program)
+  {
+    $generator = new HTMLGenerator();
+    $a = array();
+    foreach($this->tests as $t)
+    {
+      $result = $program->RunTest( $t.'.src' );
+      $result->SetTestName( $t.'.src' );
+
+      // parse error
+      if($result->GetParseCode() != 0)
+      {
+        $result->SetIntCode("-");
+        $result->SetErrorMessage( $result->GetParseErr() );
+        $result->SetStatus(False);
+      }
+      else
+      {
+        // interpret error
+        if($result->GetIntCode() != 0)
+        {
+          $result->SetErrorMessage( $result->GetIntErr() );
+          $result->SetStatus(False);
+        }
+        // OK
+        else
+        {
+          $result->SetErrorMessage("-");
+          $result->SetStatus(True);
+        }
+      }
+
+      $generator->AddTest($result);
+
+    }
+
+    return $generator;
+  }
+
 
 }

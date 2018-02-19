@@ -11,8 +11,7 @@
  * @copyright Martin Benes (c) 2018
  */
 
-include 'test_config.php'; // TestConfiguration, FileWriter
-include 'test_controller.php'; // HTML Generator
+include 'test_model.php'; // TestConfiguration, FileWriter
 
 /**
  * Error stream.
@@ -41,6 +40,22 @@ try {
 }
 /* ----------------------- */
 
-$g->GenerateTestReport();
+/* -------- RUN --------- */
+try {
+  // create program
+  $program = new Program($conf->GetParse(), $conf->GetInterpret());
+  // get set of tests
+  $testset = new TestSet( $conf->GetTests() );
+  // launch testing
+  $results = $testset->Launch( $program );
+
+// error
+} catch(Exception $e) {
+  $ErrOut->write( $e->getMessage()."!\n");
+  exit(10);
+}
+
+
+$results->Generate();
 
 // ==================================================

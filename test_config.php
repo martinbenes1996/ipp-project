@@ -26,12 +26,6 @@ class TestConfiguration
 
   /* ---------- DATA --------- */
   /**
-   * Directory with tests.
-   * @var string
-   * @access private
-   */
-  private $test_dir = ".";
-  /**
    * Tests will be searched in test directory recursively.
    * @var string
    * @access private
@@ -43,18 +37,18 @@ class TestConfiguration
    * @var array
    * @access private
    */
-  private $files = array( "parse-script" => "./parse.php", "int-script" => "./intepret.py" );
+  private $files = array( "parse-script" => "parse.php", "int-script" => "interpret.py", "directory" => ".");
   /**
    * Map of marks of given arguments.
    * @var array
    * @access private
    */
-  private $given = array( "parse-script" => False, "int-script" => False );
+  private $given = array( "parse-script" => False, "int-script" => False, "directory" => False);
   /* ------------------------- */
 
   /* ---------- GETTERS --------- */
-  public function GetParse() { return $this->test_dir . '/' . $this->files["parse-script"]; }
-  public function GetInterpret() { return $this->test_dir . '/' . $this->files["int-script"]; }
+  public function GetParse() { return $this->files["parse-script"]; }
+  public function GetInterpret() { return $this->files["int-script"]; }
 
   /**
    * Constructor of Configuration object.
@@ -75,6 +69,15 @@ class TestConfiguration
       // --recursive
       if($a == "--recursive") { $this->test_dir_recursive = True; }
 
+      // --directory=path
+      elseif( preg_match('/--directory=.+$/', $a) )
+      {
+        // check if multiple
+        if( $this->given["directory"] ) throw new Exception("Multiple argument ".$a);
+        // set
+        $this->given["directory"] = True;
+        $this->files["directory"] = preg_split('/=/', $a)[1];
+      }
 
       // --parse-script
       elseif( preg_match('/--parse-script=.+$/', $a) )
@@ -100,6 +103,48 @@ class TestConfiguration
       else throw new Exception("Unknown argument ".$a);
     }
 
+  }
+
+  private function GetDirs($name)
+  {
+    $dirs = array();
+    $dir = $name;
+    foreach(scandir($dir) as $file)
+    {
+      if($file == '.git') continue;
+      $n = $dir.DIRECTORY_SEPARATOR.$file;
+      if(is_dir($n))
+      {
+        if($file == '.' || $file == '..') continue;
+        if($this->test_dir_recursive)
+        {
+          $dirs = array_merge($dirs, $this->GetDirs($n));
+        }
+      }
+    }
+    $dirs[] = $name;
+    return $dirs;
+  }
+
+
+
+
+  public function getTests()
+  {
+    $a = $this->GetDirs($this->files["directory"]);
+    $tests = array();
+    foreach($a as $d)
+    {
+      foreach(scandir($d) as $f)
+      {
+        if( preg_match('/.+\.src$/', $f))
+        {
+
+          $tests[] = $d.DIRECTORY_SEPARATOR.preg_split('/\.src$/', $f)[0];
+        }
+      }
+    }
+    return $tests;
   }
 
   /**

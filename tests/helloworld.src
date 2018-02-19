@@ -1,0 +1,8 @@
+.IPPcode18
+
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@x
+MOVE LF@x string@Hello,world!
+WRITE LF@x
+POPFRAME

@@ -1,37 +1,5 @@
 <?php
 
-class Test
-{
-  /* ---------- DATA --------- */
-  /**
-   * Test filename.
-   * @var string
-   * @access private
-   */
-  private $name = null;
-  /**
-   * Program object.
-   * @var Program
-   * @access private
-   */
-  private $program = null;
-  /* ------------------------- */
-
-  public function __construct($name, $program)
-  {
-    $this->name = $name;
-    $this->program = $program;
-  }
-
-  public function RunTest()
-  {
-    # test
-    $r = $this->program->RunTest($this->name);
-
-    #
-  }
-}
-
 class HTMLGenerator
 {
   private $tests = array();
@@ -43,12 +11,12 @@ class HTMLGenerator
     $this->it = $this->it + 1;
   }
 
-  public function GenerateTestReport()
+  public function Generate()
   {
     $o = new FileWriter();
 
     $o->write("<!DOCTYPE html>\n<html lang=\"en\">\n\t<head>\n");
-    $o->write("\t\t<meta charset=\"UTF-8\">\n\t\t<title>Test report | IPP project</title>");
+    $o->write("\t\t<meta charset=\"UTF-8\">\n\t\t<title>Test report | IPP project</title>\n");
     $o->write("\t</head>\n\t<body>\n");
     $o->write("\t\t<header style=\"text-align: center\">\n");
     $o->write("\t\t\t<h1>Testing report</h1>\n");
@@ -62,6 +30,7 @@ class HTMLGenerator
     $o->write("\t\t\t\t\t<th>Parse code</th>\n");
     $o->write("\t\t\t\t\t<th>Interpret code</th>\n");
     $o->write("\t\t\t\t\t<th>Error message</th>\n");
+    $o->write("\t\t\t\t\t<th>Status</th>\n");
     $o->write("\t\t\t\t</tr>\n\n");
 
     foreach($this->tests as $it => $t)
@@ -71,17 +40,11 @@ class HTMLGenerator
       $o->write("\t\t\t\t\t<td>".$it."</td>\n");
       $o->write("\t\t\t\t\t<td>".$t->GetTestName()."</td>\n");
       $o->write("\t\t\t\t\t<td>".$t->GetParseCode()."</td>\n");
-      if($t->GetParseCode() != 0)
-      {
-        $o->write("\t\t\t\t\t<td>-</td>\n");
-        $o->write("\t\t\t\t\t<td>".$t->GetParseErr()."</td>\n");
-      }
-      else
-      {
-        $o->write("\t\t\t\t\t<td>".$t->GetIntCode()."</td>\n");
-        if($t->GetIntCode() != 0) { $o->write("\t\t\t\t\t<td>".$t->GetIntErr()."</td>\n"); }
-        else { $o->write("\t\t\t\t\t<td>-</td>\n\n"); }
-      }
+      $o->write("\t\t\t\t\t<td>".$t->GetIntCode()."</td>\n");
+      $o->write("\t\t\t\t\t<td>".$t->GetErrorMessage()."</td>\n");
+      if($t->GetStatus()) { $o->write("\t\t\t\t\t<td>OK</td>\n"); }
+      else { $o->write("\t\t\t\t\t<td>FAIL</td>\n"); }
+
       $o->write("\t\t\t\t</tr>\n");
     }
 

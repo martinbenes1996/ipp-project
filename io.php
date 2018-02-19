@@ -144,18 +144,18 @@ class TmpFile
 
   public function __construct()
   {
-    $this->name = tmpnam(".", "");
-    $this->reader = FileReader($this->name);
+    $this->name = tempnam(".", "");
+    $this->reader = new FileReader($this->name);
   }
   public function __destruct()
   {
-    unlink($name);
+    unlink($this->name);
   }
 
   public function read()
   {
     $s = "";
-    while(($l == $this->reader->read()) != false)
+    while(($l = $this->reader->read()) != false)
     {
       $s = $s . $l;
     }

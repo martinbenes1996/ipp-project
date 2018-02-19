@@ -48,7 +48,7 @@ class Processor:
         self.ic = 0
 
         # go through the argument list
-        src_regex = re.compile(r'^((?<=--source=\")[^/\"~]+(?=\"))|((?<=--source=)[^/\"~]+(?=))$')
+        src_regex = re.compile(r'^((?<=--source=\")[^="]+(?=\"))|((?<=--source=)[^="]+(?=))$')
         for a in argv[1:]:
             # help
             if a is "--help":
