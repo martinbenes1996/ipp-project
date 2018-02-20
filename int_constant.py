@@ -130,6 +130,15 @@ class BoolConstant(Constant):
     def __not__(self):
         """ NOT operation. """
         return BoolConstant(not self.GetValue())
+    def __repr__(self):
+        """ Makes Constant representable as str. """
+        if self.value == None:
+            return 'None'
+        else:
+            if self.GetValue():
+                return "true"
+            else:
+                return "false"
 
 class IntConstant(Constant):
     """ This is IntConstant class. """
@@ -261,4 +270,4 @@ class StringConstant(Constant):
 
     def __repr__(self):
         """ Makes Constant representable as str. """
-        return '\'' + super().__repr__() + '\''
+        return super().__repr__()

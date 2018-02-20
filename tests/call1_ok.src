@@ -1,0 +1,11 @@
+.IPPcode18
+
+JUMP main
+
+
+LABEL f
+  WRITE string@funkce
+  RETURN
+
+LABEL main
+CALL f

@@ -209,7 +209,7 @@ class Instruction:
         pass
     def Write(self):
         """ WRITE operation. """
-        print( self.arg1.GetValue(), end='')
+        print( repr(self.arg1), end='')
 
     # string
     def Concatenate(self):
@@ -391,8 +391,7 @@ class Instruction:
 
         if self.opcode == 'LABEL':
             self.ReadOperands(self.ParseLabel)
-            if run.bypass and self.arg1 != run.bypass_stop:
-                return lambda *args, **kwargs: None
+            return self.Label
         elif run.bypass:
             return lambda *args, **kwargs: None
 

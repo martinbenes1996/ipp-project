@@ -1,6 +1,0 @@
-.IPPcode18
-
-DEFVAR GF@x
-MOVE GF@x int@42
-
-WRITE GF@x

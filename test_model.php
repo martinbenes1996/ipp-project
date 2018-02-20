@@ -178,7 +178,8 @@ class TestSet
       if($result->GetParseCode() != 0)
       {
         $result->SetIntCode("-");
-        $result->SetErrorMessage( $result->GetParseErr() );
+        $err = $result->GetParseErr();
+        $result->SetErrorMessage( $err );
         $result->SetStatus(False);
       }
       else
@@ -186,7 +187,8 @@ class TestSet
         // interpret error
         if($result->GetIntCode() != 0)
         {
-          $result->SetErrorMessage( $result->GetIntErr() );
+          $err = $result->GetIntErr();
+          $result->SetErrorMessage( $err );
           $result->SetStatus(False);
         }
         // OK
