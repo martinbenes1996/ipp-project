@@ -1,0 +1,5 @@
+.IPPcode18
+
+JUMP skip
+WRITE int@0
+LABEL skip

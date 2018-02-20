@@ -31,6 +31,8 @@ class Run:
         self.labels = dict()
         self.callstack = Struct.Stack()
         self.datastack = Struct.Stack()
+        self.bypass = False
+        self.bypass_stop = ""
 
     def GetPC(self):
         """ Program counter getter."""
@@ -233,23 +235,39 @@ class Instruction:
         """ LABEL operation. """
         global run
         run.AddLabel(self.arg1, run.GetPC()-1)
+        if run.bypass and run.bypass_stop == self.arg1:
+            run.bypass_stop = ""
+            run.bypass = False
     def Jump(self):
         """ JUMP operation. """
         global run
-        pos = run.GetLabelPos(self.arg1)
-        run.SetPC(pos+1)
+        try:
+            pos = run.GetLabelPos(self.arg1)
+            run.SetPC(pos+1)
+        except Err.SemanticException:
+            run.bypass = True
+            run.bypass_stop = self.arg1
+
     def JumpIfEq(self):
         """ JUMPIFEQ operation. """
         global run
         if (self.arg2 == self.arg3).GetValue() :
-            pos = run.GetLabelPos(self.arg1)
-            run.SetPC(pos+1)
+            try:
+                pos = run.GetLabelPos(self.arg1)
+                run.SetPC(pos+1)
+            except Err.SemanticException:
+                run.bypass = True
+                run.bypass_stop = self.arg1
     def JumpIfNEq(self):
         """" JUMPIFNEQ operation. """
         global run
         if not (self.arg2 == self.arg3).GetValue() :
-            pos = run.GetLabelPos(self.arg1)
-            run.SetPC(pos+1)
+            try:
+                pos = run.GetLabelPos(self.arg1)
+                run.SetPC(pos+1)
+            except Err.SemanticException:
+                run.bypass = True
+                run.bypass_stop = self.arg1
 
     # debug
     def DPrint(self):
@@ -369,6 +387,16 @@ class Instruction:
 
     def Decode(self):
         obj = self.obj
+        global run
+
+        if self.opcode == 'LABEL':
+            self.ReadOperands(self.ParseLabel)
+            if run.bypass and self.arg1 != run.bypass_stop:
+                return lambda *args, **kwargs: None
+        elif run.bypass:
+            return lambda *args, **kwargs: None
+
+
 
         # MOVE
         if self.opcode == 'MOVE':
@@ -565,11 +593,15 @@ class Reader:
         """ Decodes instruction, increments PC. """
         global run
         if len(self.root) <= run.GetPC():
+            if run.bypass:
+                raise Err.SemanticException('unknown label ' + self.bypass_stop)
             raise Err.ProgramExitException()
 
         i = Instruction( self.root[run.GetPC()] )
         run.IncrementPC()
         return i.Decode()
+
+
 
     def GetPC(self):
         global run
