@@ -204,31 +204,26 @@ class TestSet
           }
           else
           {
-            $result->SetErrorMessage("-");
-            $result->SetStatus(True);
+            // check return code
+            $should = 0;
+            if(file_exists( $t.'.rc' ))
+            {
+              $f = new FileReader( $t.'.rc' );
+              $should = $f->read_int();
+            }
+            $have = $result->GetIntCode();
+            if( $should != $have )
+            {
+              $result->SetErrorMessage("Return code not correct.");
+              $result->SetStatus(False);
+              return;
+            }
+            else
+            {
+              $result->SetErrorMessage("-");
+              $result->SetStatus(True);
+            }
           }
-
-          // check return code
-          $should = 0;
-          if(file_exists( $t.'.rc' ))
-          {
-            $f = new FileReader( $t.'.rc' );
-            $should = $f->read_int();
-          }
-          $have = $result->GetIntCode();
-          if( $should != $have )
-          {
-            $result->SetErrorMessage("Return code not correct.");
-            $result->SetStatus(False);
-          }
-          else
-          {
-            $result->SetErrorMessage("-");
-            $result->SetStatus(True);
-          }
-
-
-
         }
       }
 
