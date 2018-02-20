@@ -194,29 +194,10 @@ class TestSet
         {
           // check output
           $f = new FileReader( $this->CheckFile( $t.'.out', '/dev/null') );
-          /*
-          echo "strcmp ".strcmp($result->GetIntOut(), $f->get())."\n";
+          $should = $f->get();
+          $have = $result->GetIntOut();
 
-          echo "HAVE:";
-          $a = unpack('C*', $result->GetIntOut());
-          foreach($a as $i)
-          {
-            echo $i." ";
-          }
-          echo "\n";
-
-          echo gettype($f->get())."\n";
-          echo "WANT:";
-          $a = unpack('C*', $f->get());
-          foreach($a as $i)
-          {
-            echo $i." ";
-          }
-          echo "\n";
-          */
-
-
-          if( strcmp($result->GetIntOut(), $f->get()) != 0 )
+          if( strcmp($have, $should) != 0 )
           {
             $result->SetErrorMessage("Output not correct.");
             $result->SetStatus(False);
@@ -226,6 +207,27 @@ class TestSet
             $result->SetErrorMessage("-");
             $result->SetStatus(True);
           }
+
+          // check return code
+          $should = 0;
+          if(file_exists( $t.'.rc' ))
+          {
+            $f = new FileReader( $t.'.rc' );
+            $should = $f->read_int();
+          }
+          $have = $result->GetIntCode();
+          if( $should != $have )
+          {
+            $result->SetErrorMessage("Return code not correct.");
+            $result->SetStatus(False);
+          }
+          else
+          {
+            $result->SetErrorMessage("-");
+            $result->SetStatus(True);
+          }
+
+
 
         }
       }

@@ -103,6 +103,7 @@ class FileReader extends File
    */
   public function read() { return trim(fgets($this->handle)); }
   public function read_raw() { return fgets($this->handle); }
+  public function read_int() { return fscanf($this->handle, "%d")[0]; }
   public function get()
   {
     $s = "";
