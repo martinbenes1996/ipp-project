@@ -209,7 +209,7 @@ class Instruction:
         pass
     def Write(self):
         """ WRITE operation. """
-        print( repr(self.arg1), end='')
+        print( repr(self.arg1) )
 
     # string
     def Concatenate(self):
