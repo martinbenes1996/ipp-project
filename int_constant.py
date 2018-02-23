@@ -223,8 +223,16 @@ class StringConstant(Constant):
 
     def __init__(self, value):
         """ Constructor of StringConstant class. """
+        # replace escapes
+        for n in range(0, 33):
+            value = value.replace("\\" + str(n).zfill(3), chr(n))
+        value = value.replace("\\035", chr(35))
+        value = value.replace("\\092", chr(92))
+
+        # if any escaped yet, it is error!
+
         if type(value) == str:
-            super().__init__(bytes(value, "utf-8").decode("unicode_escape"))
+            super().__init__(value)
         else:
             raise Err.SemanticException('string value expected')
 

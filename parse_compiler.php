@@ -183,6 +183,8 @@ class Compiler
     if( preg_match($const_regex, $str) )
     {
       list($type, $data) = explode('@', $str, 2);
+      if($type == "string") { $this->CheckEscaped($data); }
+
       return new Argument($data, $type, $num);
     }
     else return NULL;
@@ -463,6 +465,12 @@ class Compiler
 
   /*=============================================================*/
 
+  private function CheckEscaped($str)
+  {
+    if( preg_match('/\\\(?![0-9]{3})/', $str) ) {
+      throw new Exception("Invalid escape sequence ".$str);
+    }
+  }
 
 }
 

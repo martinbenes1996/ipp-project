@@ -8,5 +8,3 @@ WRITE GF@x
 SUB GF@x GF@x int@1
 
 JUMPIFNEQ before GF@x int@0
-
-WRITE string@\x0a
