@@ -1,0 +1,35 @@
+.IPPcode18
+
+CREATEFRAME
+DEFVAR TF@n
+READ TF@n int
+
+CALL printUntil
+JUMP end
+
+# prints from one to n
+LABEL printUntil
+  PUSHFRAME
+
+  DEFVAR LF@it
+  MOVE LF@it int@0
+
+  LABEL cycle
+    CREATEFRAME
+    DEFVAR TF@x
+    ADD LF@it LF@it int@1
+    MOVE TF@x LF@it
+    CALL printInt  # prints
+    JUMPIFNEQ cycle LF@it LF@n
+
+  POPFRAME
+  RETURN
+
+# prints one int
+LABEL printInt
+  PUSHFRAME
+  WRITE LF@x
+  POPFRAME
+  RETURN
+
+LABEL end

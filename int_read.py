@@ -147,9 +147,13 @@ class Instruction:
     def Call(self):
         """ CALL operation. """
         global run
-        pos = run.GetLabelPos(self.arg1)
-        run.PushPC()
-        run.SetPC(pos+1)
+        try:
+            run.PushPC()
+            pos = run.GetLabelPos(self.arg1)
+            run.SetPC(pos+1)
+        except Err.SemanticException:
+            run.bypass = True
+            run.bypass_stop = self.arg1
     def Return(self):
         """ RETURN operation. """
         global run
@@ -204,9 +208,9 @@ class Instruction:
         self.arg1.Set( self.arg2.ToInt() )
 
     # IO
-    def Read(self):                                                             #TODO
+    def Read(self):
         """ READ operation. """
-        pass
+        self.arg1.Set( self.arg2(input()) )
     def Write(self):
         """ WRITE operation. """
         print( repr(self.arg1) )
@@ -283,7 +287,7 @@ class Instruction:
 
 
     def ParseConstant(self, obj):
-        """ Parses constant (variable or constant) and returns it. """
+        """ Parses constant (variable or constant). """
         # type
         try:
             t = obj.attrib['type']
@@ -308,7 +312,7 @@ class Instruction:
             raise Err.SyntaxException('unsupported type')
 
     def ParseNewVariable(self, obj):
-        """ Parses constant (variable or constant) and returns it. """
+        """ Parses constant (variable or constant). """
         # type
         try: t = obj.attrib['type']
         except: raise XMLException('No type in instruction '+self.order)
@@ -335,7 +339,7 @@ class Instruction:
 
 
     def ParseLabel(self, obj):
-        """ Parses label and returns its name. """
+        """ Parses label. """
         # type
         try: t = obj.attrib['type']
         except: raise XMLException('OPCODE parameter not present in instruction '+self.order)
@@ -354,6 +358,28 @@ class Instruction:
             raise Err.OperandException('Label expected: instruction ' + self.order)
         else:
             return labelname.search(val).group()
+
+    def ParseType(self, obj):
+        """ Parses type. """
+        # type
+        try:
+            t = obj.attrib['type']
+        except:
+            raise XMLException('OPCODE parameter not present in instruction')
+        if t != 'type':
+            raise Err.OperandException('Type expected: instruction ' + self.order)
+
+        # text
+        try:
+            val = obj.text
+        except:
+            raise XMLException('no text in instruction')
+
+        if val == 'int': return IntConstant
+        elif val == 'string': return StringConstant
+        elif val == 'bool': return BoolConstant
+        else:
+            raise Err.SyntaxException('unsupported type')
 
 
     def ReadOperands(self, f1 = None, f2 = None, f3 = None):
