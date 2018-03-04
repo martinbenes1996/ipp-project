@@ -22,7 +22,7 @@ class HelpException(NonErrorException):
     def __init__(self):
         super().__init__(0)
     def __str__(self):
-        return "Help parameter occured."
+        return ""
 
 class ProgramExitException(NonErrorException):
     def __init__(self):

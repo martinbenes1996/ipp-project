@@ -593,7 +593,7 @@ class Reader:
         global run
         if len(self.root) <= run.GetPC():
             if run.bypass:
-                raise Err.SemanticException('unknown label ' + self.bypass_stop)
+                raise Err.SemanticException('unknown label ' + run.bypass_stop)
             raise Err.ProgramExitException()
 
         i = Instruction( self.root[run.GetPC()] )

@@ -22,14 +22,12 @@ def main():
         # create Processor
         p = Proc.Processor(sys.argv)
 
-    # parameters
-    except Err.ParameterException as e:
-        print(e)
-        exit(e.GetCode())
+    except Err.HelpException as h:
+        exit(h.GetCode())
 
-    # --help
-    except Err.HelpException() as e:
-        sys.exit(e.GetCode())
+    except Err.MyException as e:
+        print(e, file=sys.stderr)
+        exit(e.GetCode())
 
 
 
@@ -42,7 +40,7 @@ def main():
 
     # error
     except Exception as e:
-        print(e) # print to stderr
+        print(e, file=sys.stderr) # print to stderr
         sys.exit(e.GetCode())
 
     # ============================================ #

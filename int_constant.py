@@ -228,6 +228,12 @@ class StringConstant(Constant):
             value = value.replace("\\" + str(n).zfill(3), chr(n))
         value = value.replace("\\035", chr(35))
         value = value.replace("\\092", chr(92))
+        # replace XML entities
+        value = value.replace("&amp;", "&")
+        value = value.replace("&quot;", "\"")
+        value = value.replace("&apos;", "'")
+        value = value.replace("&lt;", "<")
+        value = value.replace("&gt;", ">")
 
         # if any escaped yet, it is error!
 

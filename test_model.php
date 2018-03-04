@@ -174,65 +174,83 @@ class TestSet
       $result = $program->RunTest( $t.'.src', $input );
       $result->SetTestName( $t.'.src' );
 
-      // parse error
-      if($result->GetParseCode() != 0)
+      // read .rc file
+      $should = 0;
+      if(file_exists( $t.'.rc' ))
       {
-        $result->SetIntCode("-");
-        $err = $result->GetParseErr();
-        $result->SetErrorMessage( $err );
-        $result->SetStatus(False);
+        $f = new FileReader( $t.'.rc' );
+        $should = $f->read_int();
       }
-      else
+
+
+      // parse error
+      $have = $result->GetParseCode();
+      if($have != 0)
       {
-        // interpret error
-        if($result->GetIntCode() != 0)
+        // parse fail
+        if($should != $have)
+        {
+          $result->SetIntCode("-");
+          $err = $result->GetParseErr();
+          $result->SetErrorMessage( $err );
+          $result->SetStatus(False);
+          continue;
+        }
+      }
+
+      // interpret error
+      $have = $result->GetIntCode();
+      if($have != 0)
+      {
+        // interpretation fail
+        if($should != $have)
         {
           $err = $result->GetIntErr();
           $result->SetErrorMessage( $err );
           $result->SetStatus(False);
-        }
-        // OK
-        else
-        {
-          // check output
-          $f = new FileReader( $this->CheckFile( $t.'.out', '/dev/null') );
-          $should = $f->get();
-          $have = $result->GetIntOut();
-
-          if( strcmp($have, $should) != 0 )
-          {
-            $result->SetErrorMessage("Output not correct.");
-            $result->SetStatus(False);
-          }
-          else
-          {
-            // check return code
-            $should = 0;
-            if(file_exists( $t.'.rc' ))
-            {
-              $f = new FileReader( $t.'.rc' );
-              $should = $f->read_int();
-            }
-            $have = $result->GetIntCode();
-            if( $should != $have )
-            {
-              $result->SetErrorMessage("Return code not correct.");
-              $result->SetStatus(False);
-              return;
-            }
-            else
-            {
-              $result->SetErrorMessage("-");
-              $result->SetStatus(True);
-            }
-          }
+          continue;
         }
       }
 
+
+      // check output
+      $f = new FileReader( $this->CheckFile( $t.'.out', '/dev/null') );
+      $should = $f->get();
+      $have = $result->GetIntOut();
+
+      if( strcmp($have, $should) != 0 )
+      {
+        $result->SetErrorMessage("Output not correct.");
+        $result->SetStatus(False);
+      }
+      else
+      {
+        // check return code
+        $should = 0;
+        if(file_exists( $t.'.rc' ))
+        {
+          $f = new FileReader( $t.'.rc' );
+          $should = $f->read_int();
+        }
+        $have = $result->GetIntCode();
+
+        if( $should != $have )
+        {
+          $result->SetErrorMessage("Return code not correct.");
+          $result->SetStatus(False);
+          return;
+        }
+        else
+        {
+          $result->SetErrorMessage("-");
+          $result->SetStatus(True);
+        }
+      }
+
+      // add test
       $generator->AddTest($result);
 
     }
-
     return $generator;
   }
 

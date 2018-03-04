@@ -1,0 +1,4 @@
+.IPPcode18
+
+JUMP l
+WRITE int@42

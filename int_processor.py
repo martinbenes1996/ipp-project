@@ -50,7 +50,7 @@ class Processor:
         src_regex = re.compile(r'^((?<=--source=\")[^="]+(?=\"))|((?<=--source=)[^="]+(?=))$')
         for a in argv[1:]:
             # help
-            if a is "--help":
+            if a == "--help":
                 self.PrintHelp()
                 raise Err.HelpException()
 

@@ -183,7 +183,15 @@ class Compiler
     if( preg_match($const_regex, $str) )
     {
       list($type, $data) = explode('@', $str, 2);
-      if($type == "string") { $this->CheckEscaped($data); }
+      if($type == "string")
+      {
+        $this->CheckEscaped($data);
+        $data = str_replace('<', '&lt;', $data);
+        $data = str_replace('>', '&gt;', $data);
+        $data = str_replace('&', '&amp;', $data);
+        $data = str_replace('\'', '&apos;', $data);
+        $data = str_replace('"', '&quot;', $data);
+      }
 
       return new Argument($data, $type, $num);
     }
