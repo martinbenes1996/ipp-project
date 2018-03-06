@@ -1,0 +1,13 @@
+.IPPcode18
+
+DEFVAR GF@x
+DEFVAR GF@y
+DEFVAR GF@z
+
+MOVE GF@x bool@true
+MOVE GF@y bool@true
+AND  GF@z GF@x GF@y
+
+JUMPIFEQ over GF@z bool@true
+  WRITE string@spatne
+LABEL over
