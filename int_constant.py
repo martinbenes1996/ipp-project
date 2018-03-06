@@ -65,6 +65,12 @@ class Constant:
     def __eq__(self, c):
         """ EQ operation. """
         raise Err.SemanticException('invalid operation')
+    def __and__(self, c):
+        """ AND operation. """
+        raise Err.SemanticException('invalid operation')
+    def __or__(self, c):
+        """ OR operation. """
+        raise Err.SemanticException('invalid operation')
     def __not__(self):
         """ NOT operation. """
         raise Err.SemanticException('invalid operation')
@@ -127,6 +133,18 @@ class BoolConstant(Constant):
             return BoolConstant(self.GetValue() == c.GetValue())
         else:
             raise Err.SemanticException('incompatible types')
+    def __and__(self, c):
+        """ AND operation. """
+        if c.GetType() == bool:
+            return BoolConstant(self.GetValue() and c.GetValue())
+        else:
+            raise ERr.SemanticException('incompatible types')
+    def __or__(self, c):
+        """ OR operation. """
+        if c.GetType() == bool:
+            return BoolConstant(self.GetValue() or c.GetValue())
+        else:
+            raise ERr.SemanticException('incompatible types')
     def __not__(self):
         """ NOT operation. """
         return BoolConstant(not self.GetValue())

@@ -464,8 +464,8 @@ class Compiler
     }
 
     if($line == "") return NULL; // skip empty
-
-    $l = preg_split('/ /', $line ); // splits line to list
+    
+    $l = preg_split('/\s+/', $line ); // splits line to list
     $l[0] = strtoupper($l[0]);   // capitalize opcode (it is case-insensitive)
 
     return $l;

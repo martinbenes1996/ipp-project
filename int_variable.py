@@ -72,6 +72,12 @@ class Variable():
     def __eq__(self, c):
         """ EQ operation. """
         return self.value.__eq__(c)
+    def __and__(self, c):
+        """ AND operation. """
+        return self.value.__and__(c)
+    def __or__(self, c):
+        """ OR operation. """
+        return self.value.__or__(c)
     def __not__(self):
         """ NOT operation. """
         return self.value.__not__()

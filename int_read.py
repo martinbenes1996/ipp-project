@@ -193,10 +193,10 @@ class Instruction:
         self.arg1.Set( self.arg2 == self.arg3 )
     def And(self):
         """ AND operation. """
-        self.arg1.Set( self.arg2 and self.arg3 )
+        self.arg1.Set( self.arg2 & self.arg3 )
     def Or(self):
         """ OR operation. """
-        self.arg1.Set( self.arg2 or self.arg3 )
+        self.arg1.Set( self.arg2 | self.arg3 )
     def Not(self):
         """ NOT operation"""
         self.arg1.Set( not self.arg2 )

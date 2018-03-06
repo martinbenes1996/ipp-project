@@ -194,6 +194,7 @@ class TestSet
           $err = $result->GetParseErr();
           $result->SetErrorMessage( $err );
           $result->SetStatus(False);
+          $generator->AddTest($result);
           continue;
         }
       }
@@ -208,6 +209,7 @@ class TestSet
           $err = $result->GetIntErr();
           $result->SetErrorMessage( $err );
           $result->SetStatus(False);
+          $generator->AddTest($result);
           continue;
         }
       }
@@ -238,7 +240,8 @@ class TestSet
         {
           $result->SetErrorMessage("Return code not correct.");
           $result->SetStatus(False);
-          return;
+          $generator->AddTest($result);
+          continue;
         }
         else
         {

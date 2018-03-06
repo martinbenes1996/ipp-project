@@ -139,7 +139,6 @@ class TestConfiguration
       {
         if( preg_match('/.+\.src$/', $f))
         {
-
           $tests[] = $d.DIRECTORY_SEPARATOR.preg_split('/\.src$/', $f)[0];
         }
       }
