@@ -1,0 +1,5 @@
+.IPPcode18
+
+DEFVAR GF@x
+STRLEN GF@x string@
+WRITE GF@x

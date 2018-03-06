@@ -1,0 +1,4 @@
+.IPPcode18
+
+DEFVAR GF@x
+POPS GF@x

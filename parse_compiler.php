@@ -102,7 +102,7 @@ class Compiler
     // read header
     if( $this->in->read() != ".IPPcode18") throw new Exception("Missing '.IPPcode18' header");
     // write XML header
-    $this->out->write("<?xml version=\"1.0\"?>\n");
+    $this->out->write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     $this->out->write("<program language=\"IPPcode18\">\n");
   }
 
@@ -464,7 +464,7 @@ class Compiler
     }
 
     if($line == "") return NULL; // skip empty
-    
+
     $l = preg_split('/\s+/', $line ); // splits line to list
     $l[0] = strtoupper($l[0]);   // capitalize opcode (it is case-insensitive)
 

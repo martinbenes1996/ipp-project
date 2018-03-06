@@ -86,10 +86,10 @@ class Variable():
         return self.value.__len__()
     def __setitem__(self, pos, c):
         """ SETCHAR operation. """
-        return self.value.__setitem__(self, pos, c)
+        return self.value.__setitem__(pos, c)
     def __getitem__(self, pos):
         """ GETCHAR operation. """
-        return self.value.__getitem__(self, pos)
+        return self.value.__getitem__(pos)
 
     def __repr__(self):
         """ Makes Variable representable as str. """

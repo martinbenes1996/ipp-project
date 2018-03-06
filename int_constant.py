@@ -29,7 +29,7 @@ class Constant:
 
     def GetType(self):
         """ Returns type. """
-        return None
+        raise Err.MissingValueException('value not assigned')
     def Type(self):
         """ Returns string of type. """
         raise Err.SemanticException('invalid operation')
@@ -46,34 +46,34 @@ class Constant:
 
     def __add__(self, c):
         """ ADD operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __sub__(self, c):
         """ SUB operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __mul__(self, c):
         """ MUL operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __floordiv__(self, c):
         """ IDIV operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __lt__(self, c):
         """ LT operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __gt__(self, c):
         """ GT operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __eq__(self, c):
         """ EQ operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __and__(self, c):
         """ AND operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __or__(self, c):
         """ OR operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __not__(self):
         """ NOT operation. """
-        raise Err.SemanticException('invalid operation')
+        raise Err.MissingValueException('invalid operation')
     def __len__(self):
         """ STRLEN operation. """
         raise Err.StringException('invalid operation')
@@ -120,31 +120,31 @@ class BoolConstant(Constant):
         if c.GetType() == bool:
             return BoolConstant(not self.GetValue() and c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __gt__(self, c):
         """ GT operation. """
         if c.GetType() == bool:
             return BoolConstant(self.GetValue() and not c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __eq__(self, c):
         """ EQ operation. """
         if c.GetType() == bool:
             return BoolConstant(self.GetValue() == c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __and__(self, c):
         """ AND operation. """
         if c.GetType() == bool:
             return BoolConstant(self.GetValue() and c.GetValue())
         else:
-            raise ERr.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __or__(self, c):
         """ OR operation. """
         if c.GetType() == bool:
             return BoolConstant(self.GetValue() or c.GetValue())
         else:
-            raise ERr.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __not__(self):
         """ NOT operation. """
         return BoolConstant(not self.GetValue())
@@ -191,7 +191,7 @@ class IntConstant(Constant):
         elif c.GetType() == float:
             return FloatConstant(float(self.GetValue()) + c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __sub__(self, c):
         """ SUB operation. """
         if c.GetType() == int:
@@ -199,7 +199,7 @@ class IntConstant(Constant):
         elif c.GetType() == float:
             return FloatConstant(float(self.GetValue()) - c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __mul__(self, c):
         """ MUL operation. """
         if c.GetType() == int:
@@ -207,33 +207,37 @@ class IntConstant(Constant):
         elif c.GetType() == float:
             return FloatConstant(float(self.GetValue()) * c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __floordiv__(self, c):
         """ IDIV operation. """
         if c.GetType() == int:
+            # zero devide control
+            if c.GetValue() == 0:
+                raise Err.ZeroDivideException('dividing by zero')
+
             return IntConstant(self.GetValue() // c.GetValue())
         elif c.GetType() == float:
             return FloatConstant(float(self.GetValue()) // c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __lt__(self, c):
         """ LT operation. """
         if c.GetType() == int or c.GetType() == float:
             return BoolConstant(self.GetValue() < c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __gt__(self, c):
         """ GT operation. """
         if c.GetType() == int or c.GetType() == float:
             return BoolConstant(self.GetValue() > c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __eq__(self, c):
         """ EQ operation. """
         if c.GetType() == int or c.GetType() == float:
             return BoolConstant(self.GetValue() == c.GetValue())
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
 
 
 class StringConstant(Constant):
@@ -284,21 +288,26 @@ class StringConstant(Constant):
     def __setitem__(self, pos, c):
         """ SETCHAR operation. """
         if pos.GetType() == int and c.GetType() == str:
-            if pos.GetValue() < len(self):
-                self.value = self.GetValue()[0:pos.GetValue()] + c.GetValue()[0] + self.GetValue()[pos.GetValue()+1:]
-            else:
+            if pos.GetValue() >= len(self):
                 raise Err.StringException('index out of range')
+            if c.GetValue() == "":
+                raise Err.StringException('empty string')
+
+            self.value = self.GetValue()[0:pos.GetValue()] + c.GetValue()[0] + self.GetValue()[pos.GetValue()+1:]
+
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
     def __getitem__(self, pos):
         """ GETCHAR operation. """
         if pos.GetType() == int:
-            if pos.GetValue() < len(self):
-                return StringConstant(self.GetValue[pos.GetValue()])
-            else:
+            if pos.GetValue() >= len(self):
                 raise Err.StringException('index out of range')
+            if self.GetValue() == "":
+                raise Err.StringException('empty string')
+            return StringConstant(self.GetValue()[pos.GetValue()])
+
         else:
-            raise Err.SemanticException('incompatible types')
+            raise Err.OperandException('incompatible types')
 
     def __repr__(self):
         """ Makes Constant representable as str. """

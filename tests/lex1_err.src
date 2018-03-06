@@ -1,0 +1,3 @@
+.IPPcode18
+
+JUMPIFNEQ LF@x LF@y LF@z

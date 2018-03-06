@@ -190,13 +190,18 @@ class TestSet
         // parse fail
         if($should != $have)
         {
-          $result->SetIntCode("-");
           $err = $result->GetParseErr();
           $result->SetErrorMessage( $err );
           $result->SetStatus(False);
-          $generator->AddTest($result);
-          continue;
         }
+        else
+        {
+          $result->SetErrorMessage("-");
+          $result->SetStatus(True);
+        }
+        $result->SetIntCode("-");
+        $generator->AddTest($result);
+        continue;
       }
 
       // interpret error
@@ -209,9 +214,14 @@ class TestSet
           $err = $result->GetIntErr();
           $result->SetErrorMessage( $err );
           $result->SetStatus(False);
-          $generator->AddTest($result);
-          continue;
         }
+        else
+        {
+          $result->SetErrorMessage("-");
+          $result->SetStatus(True);
+        }
+        $generator->AddTest($result);
+        continue;
       }
 
 

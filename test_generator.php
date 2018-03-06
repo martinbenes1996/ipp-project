@@ -50,6 +50,7 @@ class HTMLGenerator
 
     $o->write("\t\t\t</table>\n");
     $o->write("\t\t</main>\n");
+    $o->write("\t\t<hr>\n");
     $o->write("\t</body>\n");
     $o->write("</html>\n");
   }

@@ -175,28 +175,28 @@ class Instruction
  * Regex, matching constants (int, string, bool).
  * @var string
  */
-$const_regex = '/(int@[-+]{0,1}[0-9][0-9]*)|(string@[^\s\b#]*)|(bool@((true)|(false)))/';
+$const_regex = '/^(int@[-+]{0,1}[0-9][0-9]*)|(string@[^\s\b#]*)|(bool@((true)|(false)))$/';
 // constant is    ^ integer              or  ^ string       or  ^ bool
 
 /**
  * Regex, matching identifiers.
  * @var string
  */
-$id_regex = '/[-a-zA-Z_$&%*]+/';
+$id_regex = '/^[-a-zA-Z_$&%*]+$/';
 // id consists of ^ these
 
 /**
  * Regex, matching variables.
  * @var string
  */
-$var_regex = '/((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+/';
+$var_regex = '/^((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+$/';
 // variable has ^ frame and    ^ at and ^ id
 
 /**
  * Regex, matching types.
  * @var string
  */
-$type_regex = '/(bool)|(int)|(string)/';
+$type_regex = '/^(bool)|(int)|(string)$/';
 
 /* =========================================================================== */
 

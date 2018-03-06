@@ -1,0 +1,5 @@
+.IPPcode18
+
+DEFVAR GF@y
+GETCHAR GF@y string@hatatitla int@5
+WRITE GF@y

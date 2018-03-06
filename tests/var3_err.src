@@ -1,0 +1,5 @@
+.IPPcode18
+
+DEFVAR GF@x
+DEFVAR GF@y
+MOVE GF@x GF@y

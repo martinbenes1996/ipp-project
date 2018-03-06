@@ -1,0 +1,8 @@
+.IPPcode18
+
+DEFVAR GF@x
+LABEL osmicka
+MOVE GF@x int@-7
+ADD GF@x GF@x int@+15
+MOVE GF@x string@+15
+JUMPIFEQ devitka bool@true bool@false

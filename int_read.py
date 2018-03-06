@@ -67,7 +67,7 @@ class Run:
         try:
             self.pc = self.callstack.Pop()
         except:
-            raise Err.SyntaxException('Empty call stack!')
+            raise Err.MissingValueException('Empty call stack!')
     def PrintCallStack(self):
         """ Prints callstack. """
         print("CallStack: " + repr(self.callstack) )
@@ -218,13 +218,13 @@ class Instruction:
     # string
     def Concatenate(self):
         """ CONCAT operation. """
-        self.GetFrame(self.arg1).Set(self.arg2.Concatenate(self.arg3))
+        self.arg1.Set(self.arg2.Concatenate(self.arg3))
     def StrLen(self):
         """ STRLEN operation. """
-        self.GetFrame(self.arg1).Set(len(self.arg2))
+        self.arg1.Set( IntConstant(len(self.arg2)) )
     def GetChar(self):
         """ GETCHAR operation. """
-        self.GetFrame(self.arg1).Set(self.arg2[self.arg3])
+        self.arg1.Set(self.arg2[self.arg3])
     def SetChar(self):
         """ SETCHAR operation. """
         self.arg1[self.arg2] = self.arg3
@@ -299,6 +299,8 @@ class Instruction:
         # text
         try:
             val = obj.text
+            if(val == None):
+                val = ""
         except:
             raise XMLException('no text in instruction')
 
@@ -335,8 +337,10 @@ class Instruction:
 
     def ParseVariable(self, obj):
         v = self.ParseNewVariable(obj)
-        return self.GetFrame(v).GetVariable(v.GetName())
-
+        try:
+            return self.GetFrame(v).GetVariable(v.GetName())
+        except:
+            raise Err.UndefinedVariableException('Undefined variable ' + v.GetName() + '!')
 
     def ParseLabel(self, obj):
         """ Parses label. """

@@ -1,0 +1,28 @@
+.IPPcode18
+
+          DEFVAR                GF@x
+
+
+
+
+
+
+
+
+
+MOVE GF@x int@0 # zkouska # zkouska
+
+# komentare komentare #####
+#########
+ADD GF@x GF@x int@42
+
+
+
+
+
+
+
+
+
+          WRITE GF@x
+# tohle

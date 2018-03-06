@@ -1,0 +1,5 @@
+.IPPcode18
+
+DEFVAR GF@x
+CONCAT GF@x string@Hello,\032 string@World!\010
+WRITE GF@x

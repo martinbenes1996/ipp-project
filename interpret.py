@@ -38,10 +38,14 @@ def main():
         while(p.NextInstruction()):
             pass
 
-    # error
-    except Exception as e:
+    except Err.MyException as e:
         print(e, file=sys.stderr) # print to stderr
         sys.exit(e.GetCode())
+
+    # error
+    except Exception:
+        print("Internal error!", file=sys.stderr) # print to stderr
+        sys.exit(99)
 
     # ============================================ #
 
