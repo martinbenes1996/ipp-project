@@ -4,7 +4,7 @@ Error module.
 
 This module includes Exception classes.
 
-Package: int_rror.py
+Package: int_error.py
 Author: xbenes49
 Copyright: Martin Benes (c) 2018
 """
