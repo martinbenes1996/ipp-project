@@ -11,6 +11,7 @@ Copyright: Martin Benes (c) 2018
 
 import int_frame as Types # Frame, StackFrame
 import int_error as Err # exceptions
+import sys
 
 TF = None # Frame
 GF = Types.Frame() # Frame
@@ -47,4 +48,4 @@ def PrintModel():
     global LF
     result = "Model:\n| TF: "
     if TF is not None: result += repr(TF)
-    print(result + "\n| GF: " + repr(GF) + "\n| LF: " + repr(LF))
+    print(result + "\n| GF: " + repr(GF) + "\n| LF: " + repr(LF), file=sys.stderr)

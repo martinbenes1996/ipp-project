@@ -70,7 +70,7 @@ class Run:
             raise Err.MissingValueException('Empty call stack!')
     def PrintCallStack(self):
         """ Prints callstack. """
-        print("CallStack: " + repr(self.callstack) )
+        print("CallStack: " + repr(self.callstack), file=sys.stderr)
 
 
     def Pushs(self, item):
@@ -84,7 +84,7 @@ class Run:
             raise Err.MissingValueException('Empty data stack!')
     def PrintDataStack(self):
         """ Prints datastack. """
-        print("DataStack: " + repr(self.datastack) )
+        print("DataStack: " + repr(self.datastack), file=sys.stderr)
 
 
 # Run object
@@ -199,7 +199,7 @@ class Instruction:
         self.arg1.Set( self.arg2 | self.arg3 )
     def Not(self):
         """ NOT operation"""
-        self.arg1.Set( not self.arg2 )
+        self.arg1.Set( self.arg2.__not__() )
     def Int2Char(self):
         """ INT2CHAR operation. """
         self.arg1.Set( self.arg2.ToString() )
@@ -283,6 +283,91 @@ class Instruction:
         Model.PrintModel()
         run.PrintCallStack()
         run.PrintDataStack()
+    
+    # extensions
+    def Clears(self):
+        """ CLEARS operation. """
+        global run
+        run.datastack = Struct.Stack()
+    def Adds(self):
+        """ ADDS operation. """
+        self.PopArgs()
+        self.Add()
+        self.Pushs()
+    def Subs(self):
+        """ SUBS operation. """
+        self.PopArgs()
+        self.Sub()
+        self.Pushs()
+    def Muls(self):
+        """ MULS operation. """
+        self.PopArgs()
+        self.Mul()
+        self.Pushs()
+    def IDivs(self):
+        """ MULS operation. """
+        self.PopArgs()
+        self.IDiv()
+        self.Pushs()
+    def Lts(self):
+        """ LTS operation. """
+        self.PopArgs()
+        self.Lt()
+        self.Pushs()
+    def Gts(self):
+        """ GTS operation. """
+        self.PopArgs()
+        self.Gt()
+        self.Pushs()
+    def Eqs(self):
+        """ EQS operation. """
+        self.PopArgs()
+        self.Eq()
+        self.Pushs()
+    def Ands(self):
+        """ ANDS operation. """
+        self.PopArgs()
+        self.And()
+        self.Pushs()
+    def Ors(self):
+        """ ORS operation. """
+        self.PopArgs()
+        self.Or()
+        self.Pushs()
+    def Nots(self):
+        """ NOTS operation. """
+        self.PopArg()
+        self.Not()
+        self.Pushs()
+    def Int2Chars():
+        """ INT2CHARS operation. """
+        self.PopArg()
+        self.Int2Char()
+        self.Pushs()
+    def StrI2Ints():
+        """ STR2INTS operation. """
+        self.PopArg()
+        self.StrI2Int()
+        self.Pushs()
+    def JumpIfEqs(self):
+        """ JUMPIFEQS operation. """
+        self.PopArgs(create=False)
+        self.JumpIfEq()
+    def JumpIfNEqs(self):
+        """ JUMPIFNEQS operation. """
+        self.PopArgs(create=False)
+        self.JumpIfNEq()
+
+    def PopArgs(self, create=True):
+        global run
+        self.arg3 = run.Pops()
+        self.arg2 = run.Pops()
+        if create: self.arg1 = Variable()
+    def PopArg(self):
+        global run
+        self.arg2 = run.Pops()
+        self.arg1 = Variable()
+
 
 
 
@@ -596,6 +681,81 @@ class Instruction:
         elif self.opcode == 'BREAK':
             self.ReadOperands()
             return self.Break
+        
+        # CLEARS
+        elif self.opcode == 'CLEARS':
+            self.ReadOperands()
+            return self.Clears
+        
+        # ADDS
+        elif self.opcode == 'ADDS':
+            self.ReadOperands()
+            return self.Adds
+        
+        # SUBS
+        elif self.opcode == 'SUBS':
+            self.ReadOperands()
+            return self.Subs
+        
+        # MULS
+        elif self.opcode == 'MULS':
+            self.ReadOperands()
+            return self.Muls
+        
+        # IDIVS
+        elif self.opcode == 'IDIVS':
+            self.ReadOperands()
+            return self.IDivs
+        
+        # LTS
+        elif self.opcode == 'LTS':
+            self.ReadOperands()
+            return self.Lts
+        
+        # GTS
+        elif self.opcode == 'GTS':
+            self.ReadOperands()
+            return self.Gts
+        
+        # EQS
+        elif self.opcode == 'EQS':
+            self.ReadOperands()
+            return self.Eqs
+        
+        # ANDS
+        elif self.opcode == 'ANDS':
+            self.ReadOperands()
+            return self.Ands
+        
+        # ORS
+        elif self.opcode == 'ORS':
+            self.ReadOperands()
+            return self.Ors
+        
+        # NOTS
+        elif self.opcode == 'NOTS':
+            self.ReadOperands()
+            return self.Nots
+        
+        # INT2CHARS
+        elif self.opcode == 'INT2CHARS':
+            self.ReadOperands()
+            return self.Int2Chars
+        
+        # STRI2INTS
+        elif self.opcode == 'STRI2INTS':
+            self.ReadOperands()
+            return self.StrI2Ints
+        
+        # JUMPIFEQS
+        elif self.opcode == 'JUMPIFEQS':
+            self.ReadOperands(self.ParseLabel)
+            return self.JumpIfEqs
+        
+        # JUMPIFNEQS
+        elif self.opcode == 'JUMPIFNEQS':
+            self.ReadOperands(self.ParseLabel)
+            return self.JumpIfNEqs
 
 
         # wrong opcode

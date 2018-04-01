@@ -1,0 +1,20 @@
+.IPPcode18
+
+PUSHS int@5
+PUSHS int@5
+JUMPIFEQS pravda
+    WRITE string@Tohle_se_nevypise
+LABEL pravda
+
+
+PUSHS string@stejne
+PUSHS string@stejne
+JUMPIFNEQS lez # nezjisti, ze neexistuje
+    WRITE string@vypise_se
+PUSHS bool@true
+PUSHS bool@true
+JUMPIFEQS konec
+    WRITE string@Tohle_se_taky_nevypise
+LABEL konec
+
+BREAK

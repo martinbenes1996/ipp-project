@@ -304,7 +304,20 @@ class Compiler
     || ($l[0] == 'CREATEFRAME')
     || ($l[0] == 'POPFRAME')
     || ($l[0] == 'RETURN')
-    || ($l[0] == 'BREAK') )
+    || ($l[0] == 'BREAK') 
+    || ($l[0] == 'CLEARS')
+    || ($l[0] == 'ADDS')
+    || ($l[0] == 'SUBS')
+    || ($l[0] == 'MULS')
+    || ($l[0] == 'IDIVS')
+    || ($l[0] == 'ANDS')
+    || ($l[0] == 'ORS')
+    || ($l[0] == 'NOTS')
+    || ($l[0] == 'GTS')
+    || ($l[0] == 'LTS')
+    || ($l[0] == 'EQS')
+    || ($l[0] == 'INT2CHARS')
+    || ($l[0] == 'STRI2INTS') )
     {
       // args bad count
       if(count($l) != 1) throw new Exception("Argument error in instruction ".$l[0]);
@@ -349,7 +362,9 @@ class Compiler
     // 1 argument, first is label ------------------
     elseif(($l[0] == 'CALL')
         || ($l[0] == 'LABEL')
-        || ($l[0] == 'JUMP') )
+        || ($l[0] == 'JUMP') 
+        || ($l[0] == 'JUMPIFEQS')
+        || ($l[0] == 'JUMPIFNEQS') )
     {
       // args bad count
       if(count($l) != 2) throw new Exception("Argument error in instruction ".$l[0]);

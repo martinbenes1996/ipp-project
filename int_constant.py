@@ -308,6 +308,24 @@ class StringConstant(Constant):
 
         else:
             raise Err.OperandException('incompatible types')
+    def __lt__(self, c):
+        """ LT operation. """
+        if c.GetType() == str:
+            return BoolConstant(self.GetValue() < c.GetValue())
+        else:
+            raise Err.OperandException('incompatible types')
+    def __gt__(self, c):
+        """ GT operation. """
+        if c.GetType() == str:
+            return BoolConstant(self.GetValue() > c.GetValue())
+        else:
+            raise Err.OperandException('incompatible types')
+    def __eq__(self, c):
+        """ EQ operation. """
+        if c.GetType() == str:
+            return BoolConstant(self.GetValue() == c.GetValue())
+        else:
+            raise Err.OperandException('incompatible types')
 
     def __repr__(self):
         """ Makes Constant representable as str. """

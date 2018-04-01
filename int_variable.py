@@ -14,7 +14,7 @@ import int_error as Err
 
 class Variable():
     """ Class, that extends constant (value) to variable (may be changed). """
-    def __init__(self, name, loc):
+    def __init__(self, name = '', loc = ''):
         self.value = Const.Constant(None)
         self.name = name
         self.loc = loc

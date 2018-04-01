@@ -1,0 +1,15 @@
+.IPPcode18
+
+PUSHS int@5
+PUSHS int@6
+ADDS        # 11
+PUSHS int@4 
+SUBS        # 7
+PUSHS int@57
+PUSHS int@9
+IDIVS       # 6 7
+MULS        # 42
+
+DEFVAR GF@x
+POPS GF@x
+WRITE GF@x 
