@@ -29,7 +29,8 @@ class Constant:
 
     def GetType(self):
         """ Returns type. """
-        raise Err.MissingValueException('value not assigned')
+        return None
+        #raise Err.MissingValueException('value not assigned')
     def Type(self):
         """ Returns string of type. """
         raise Err.SemanticException('invalid operation')

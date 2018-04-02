@@ -34,6 +34,8 @@ class Run:
         self.bypass = False
         self.bypass_stop = ""
 
+        self.insts = 0
+
     def GetPC(self):
         """ Program counter getter."""
         return self.pc
@@ -85,6 +87,11 @@ class Run:
     def PrintDataStack(self):
         """ Prints datastack. """
         print("DataStack: " + repr(self.datastack), file=sys.stderr)
+    
+    def getInsts(self):
+        return self.insts
+    def getVarCount(self):
+        return Variable.varcount
 
 
 # Run object
@@ -255,7 +262,8 @@ class Instruction:
     def JumpIfEq(self):
         """ JUMPIFEQ operation. """
         global run
-        if (self.arg2 == self.arg3).GetValue() :
+        if (self.arg2 == self.arg3).GetValue():
+            run.insts += 1
             try:
                 pos = run.GetLabelPos(self.arg1)
                 run.SetPC(pos+1)
@@ -265,7 +273,8 @@ class Instruction:
     def JumpIfNEq(self):
         """" JUMPIFNEQ operation. """
         global run
-        if not (self.arg2 == self.arg3).GetValue() :
+        if not (self.arg2 == self.arg3).GetValue():
+            run.insts += 1
             try:
                 pos = run.GetLabelPos(self.arg1)
                 run.SetPC(pos+1)
@@ -509,8 +518,8 @@ class Instruction:
             return self.Label
         elif run.bypass:
             return lambda *args, **kwargs: None
-
-
+        
+        run.insts += 1
 
         # MOVE
         if self.opcode == 'MOVE':
@@ -540,6 +549,7 @@ class Instruction:
         # CALL
         elif self.opcode == 'CALL':
             self.ReadOperands(self.ParseLabel)
+            run.insts += 1
             return self.Call
 
         # RETURN
@@ -660,6 +670,7 @@ class Instruction:
         # JUMP
         elif self.opcode == 'JUMP':
             self.ReadOperands(self.ParseLabel)
+            run.insts += 1
             return self.Jump
 
         # JUMPIFEQ

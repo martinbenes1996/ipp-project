@@ -14,6 +14,7 @@ import int_error as Err
 
 class Variable():
     """ Class, that extends constant (value) to variable (may be changed). """
+    varcount = 0
     def __init__(self, name = '', loc = ''):
         self.value = Const.Constant(None)
         self.name = name
@@ -21,6 +22,12 @@ class Variable():
 
     def Set(self, c):
         """ Moves value and type of given constant to the variable. """
+        if c.GetType() == None:
+            raise Err.MissingValueException('missing value')
+
+        if self.GetType() == None:
+            Variable.varcount += 1
+
         if c.GetType() == int:
             self.value = Const.IntConstant( c.GetValue() )
         elif c.GetType() == str:
