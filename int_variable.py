@@ -16,6 +16,7 @@ class Variable():
     """ Class, that extends constant (value) to variable (may be changed). """
     varcount = 0
     def __init__(self, name = '', loc = ''):
+        """ Variable constructor. """
         self.value = Const.Constant(None)
         self.name = name
         self.loc = loc

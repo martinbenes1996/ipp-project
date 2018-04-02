@@ -180,6 +180,7 @@ class IntConstant(Constant):
         return 'int'
 
     def ToString():
+        """"""
         try:
             return StringConstant( chr(self.GetValue()) )
         except:

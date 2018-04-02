@@ -430,6 +430,7 @@ class Instruction:
             return Variable(varname.search(val).group(), loc.search(val).group())
 
     def ParseVariable(self, obj):
+        """ Parses variable. """
         v = self.ParseNewVariable(obj)
         try:
             return self.GetFrame(v).GetVariable(v.GetName())
@@ -510,6 +511,7 @@ class Instruction:
 
 
     def Decode(self):
+        """ Decodes instruction. """
         obj = self.obj
         global run
 
@@ -804,5 +806,6 @@ class Reader:
 
 
     def GetPC(self):
+        """ PC getter. """
         global run
         return run.GetPC()

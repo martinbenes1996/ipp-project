@@ -91,9 +91,11 @@ class Processor:
             raise Err.ParameterException('--insts or --vars parameter missing.')
 
     def PrintHelp(self):
-        print("Printing help!")
+        """ Prints help. """
+        print("Usage: $ python3 interpret.py --source=file")
 
     def PrintStatistics(self):
+        """ Prints statistics. """
         insts = Read.run.getInsts()
         varcount = Read.run.getVarCount()
         if self.stats[0] is not None:
