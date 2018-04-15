@@ -106,7 +106,7 @@ class Program
     $perr = new TmpFile();
 
     // run parse
-    exec('php '.$this->parse.' < '.$name
+    exec('php5.6 '.$this->parse.' < '.$name
                           .' > '.$pout->GetName()
                           .' 2> '.$perr->GetName(),
         $out_str, $pcode);
