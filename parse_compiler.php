@@ -100,7 +100,7 @@ class Compiler
     $this->in = new FileReader($istream);
     $this->out = new FileWriter($ostream);
     // read header
-    if( $this->in->read() != ".IPPcode18") throw new Exception("Missing '.IPPcode18' header");
+    if( strtolower($this->in->read()) != ".ippcode18") throw new Exception("Missing '.IPPcode18' header");
     // write XML header
     $this->out->write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     $this->out->write("<program language=\"IPPcode18\">\n");

@@ -25,65 +25,65 @@ class Constant:
         if self.value is not None:
             return self.value
         else:
-            raise Err.MissingValueException('value not assigned')
+            raise Err.OperandException('value not assigned')
 
     def GetType(self):
         """ Returns type. """
         return None
-        #raise Err.MissingValueException('value not assigned')
+        #raise Err.OperandException('value not assigned')
     def Type(self):
         """ Returns string of type. """
         raise Err.SemanticException('invalid operation')
 
     def ToString(self):
         """ INT2CHAR operation. """
-        raise Err.StringException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def ToInt(self):
         """ STRI2INT operation. """
-        raise Err.StringException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def Concatenate(self, c):
         """ CONCAT operation. """
-        raise Err.StringException('incompatible typess')
+        raise Err.OperandException('invalid operation')
 
     def __add__(self, c):
         """ ADD operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __sub__(self, c):
         """ SUB operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __mul__(self, c):
         """ MUL operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __floordiv__(self, c):
         """ IDIV operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __lt__(self, c):
         """ LT operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __gt__(self, c):
         """ GT operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __eq__(self, c):
         """ EQ operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __and__(self, c):
         """ AND operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __or__(self, c):
         """ OR operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __not__(self):
         """ NOT operation. """
-        raise Err.MissingValueException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __len__(self):
         """ STRLEN operation. """
-        raise Err.StringException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __setitem__(self, pos, c):
         """ SETCHAR operation. """
-        raise Err.StringException('invalid operation')
+        raise Err.OperandException('invalid operation')
     def __getitem__(self, pos):
         """ GETCHAR operation. """
-        raise Err.StringException('invalid operation')
+        raise Err.OperandException('invalid operation')
 
 
     def __str__(self):
@@ -278,7 +278,7 @@ class StringConstant(Constant):
         if c.GetType() == str:
             return StringConstant( self.value + c.GetValue() )
         else:
-            raise Err.StringException('incompatible types')
+            raise Err.OperandException('incompatible types')
 
     def ToInt(self, pos):
         """ STRI2INT operation. """

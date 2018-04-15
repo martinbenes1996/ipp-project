@@ -46,51 +46,57 @@ operations, defined in {\it io.php}. The abstract class {\it File} implements
 the common parts, its specializations {\it FileWriter} and {\it FileReader}
 then have the methods, specific for them.
 
-After the start, the program instatiates {\it FileWriter} object to cover
-standard input. Afterwards, the {\it Configuration} instance is created.
-When the help argument occurs, it raises user-defined {\it HelpException},
-which is caught and the program exits successfully. Any other type of Exception
-means bad arguments.
+The class {\it Configuration} is used for procesing the arguments and
+taking care of STATP extension. If the help argument occurs
+in arguments, {\it HelpException} is raised.
 
 The main part of program, compiling IPPcode18 into XML is done in {\it Compiler}.
-Its {\it ProcessLine()} method is called repeatly, until it returns false (which
-surprisingly means success), in case of error, the exception is raised. The
-functionality is basically to split the line to opcode and arguments, and
-match, if for given opcode the arguments are valid (count, types). Then using
-{\it Instruction} and {\it Argument} classes it is represented and generated
-to the output (its {\it FileWriter} is created by {\it Compiler}).
-
-The statistic data, needed by STATP extension, is after the
-successful parsing sent to the {\it Configuration}, which generates STATP
-output based on the arguments given (it is done notwithstanding it).
-
+Its {\it ProcessLine()} method is called repeatly. It returns true, when it
+successfully compiled a line. When it returns false, it means program ended.
+In case of error, the exception is raised. The read line is split to opcode
+and arguments, and match, if for given opcode the arguments are valid
+(count, types). Then using {\it Instruction} and {\it Argument} classes
+it is generated to the output (the {\it FileWriter} is created by {\it Compiler}).
 
 
 \paragraph{interpret.py}
-There is a similarity in the design of the {\it Compiler} class from
-{\it parse.php} and the {\it Processor} class from {\it interpret.py}.
-In addition, the second one processes arguments, raising {\it HelpException},
-when the help argument occurs. With one call, the method {\it NextInstuction()}
-interprets one instruction. Its usage is semantically same with
-{\it ProcessLine()} from {\it Compiler}, described above.
+In the interpret, the argument processing and reading the code is very similar
+to the one in parser. There is {\it Processor} class, that process the
+arguments and its method {\it NextLine()} is called for each command.
 
-The {\it Processor} creates {\it Reader} instance, that covers the XML library,
-so it provides the interface directly connected to the model. Its method
-{\it Decode()} returns function, that represents execution of the instruction.
-It may raise various types of exception depending on the type of error that
-caused them. If the program ends, the {\it ProgramExitException} is raised
-but it is caught and the false is returned, so the {\it NextInstruction()} call
-cycle is ended regularly. Otherwise the true is returned.
+Class {\it Reader}, instantiated by {\it Processor} is a cover of XML library.
+Not only it reads line by line, but it covers the jump instructions,
+hence changes the read position in the code. Its method {\it decode()}
+returns a callable object, representation of instruction, implemented
+in {\it Instruction} class.
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{interpret_classes_control.png}
+        \caption{Control class diagram of interpret. \label{fig:control}}
+    \end{center}
+\end{figure}
+
+Model is contained in {\it int\_model.py} module, containing three global variables
+(LF, GF, TF). They are instances of {\it Frame} class, {\it LF} is an instance of
+derived {\it StackFrame} class. 
+
+Those classes contain variable objects, instances of {\it Variable} class.
+The data are always represented with {\it Constant} object, even the
+{\it Variable} contains Constant object in it. Inherited class 
+are {\it BoolConstant}, {\it StringConstant} and {\it IntConstant},
+but there is a possibility to add more types. The classes override
+the methods, which are permitted for the type they represent,
+otherwise the {\it SemanticException} is raised from the {\it Constant}
+method implementation.
 
 
-
-
-
-
-\begin{multicols}{2}
-\includegraphics[width=0.45\textwidth]{interpret_constant.png}
-
-\end{multicols}
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{interpret_classes_model.png}
+        \caption{Model class diagram of interpret. \label{fig:model}}
+    \end{center}
+\end{figure}
 
 
 
@@ -107,5 +113,12 @@ The {\it TestResult} is then analyzed and editted, so the {\it Generator}
 object, whom it is given to, could just print the HTML representation with only
 a minimum of conditions. It is done at the end of program, printing the
 results on standard output in HTML 5 form.
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.6\textwidth]{test_classes.png}
+        \caption{Class diagram of test. \label{fig:model}}
+    \end{center}
+\end{figure}
 
 \end{document}

@@ -106,7 +106,7 @@ class Program
     $perr = new TmpFile();
 
     // run parse
-    exec($this->parse.' parse.php'.' < '.$name
+    exec('php '.$this->parse.' < '.$name
                           .' > '.$pout->GetName()
                           .' 2> '.$perr->GetName(),
         $out_str, $pcode);
@@ -123,7 +123,7 @@ class Program
     $ierr = new TmpFile();
 
     // run interpret
-    exec($this->interpret.' interpret.py'.' --source='.$pout->GetName()
+    exec('python3.6 '.$this->interpret.' --source='.$pout->GetName()
                               .' < '.$input
                               .' > '.$iout->GetName()
                               .' 2> '.$ierr->GetName(),

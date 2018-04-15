@@ -37,7 +37,7 @@ class TestConfiguration
    * @var array
    * @access private
    */
-  private $files = array( "parse-script" => "php5.6", "int-script" => "python3.6", "directory" => ".");
+  private $files = array( "parse-script" => "parse.php", "int-script" => "interpret.py", "directory" => ".");
   /**
    * Map of marks of given arguments.
    * @var array

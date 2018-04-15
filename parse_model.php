@@ -182,14 +182,14 @@ $const_regex = '/^(int@[-+]{0,1}[0-9][0-9]*)|(string@[^\s\b#]*)|(bool@((true)|(f
  * Regex, matching identifiers.
  * @var string
  */
-$id_regex = '/^[-a-zA-Z_$&%*]+$/';
+$id_regex = '/^[-a-zA-Z_$&%*][-a-zA-Z0-9_$&%*]*$/';
 // id consists of ^ these
 
 /**
  * Regex, matching variables.
  * @var string
  */
-$var_regex = '/^((LF)|(GF)|(TF))@[-a-zA-Z_$&%*]+$/';
+$var_regex = '/^((LF)|(GF)|(TF))@[-a-zA-Z_$&%*][-a-zA-Z0-9_$&%*]*$/';
 // variable has ^ frame and    ^ at and ^ id
 
 /**

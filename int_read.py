@@ -212,12 +212,15 @@ class Instruction:
         self.arg1.Set( self.arg2.ToString() )
     def StrI2Int(self):
         """ STRI2INT operation. """
-        self.arg1.Set( self.arg2.ToInt() )
+        self.arg1.Set( self.arg2.ToInt(self.arg2) )
 
     # IO
     def Read(self):
         """ READ operation. """
-        self.arg1.Set( self.arg2(input()) )
+        try:
+            self.arg1.Set( self.arg2(input()) )
+        except EOFError:
+            self.arg1.Set( StringConstant("") )
     def Write(self):
         """ WRITE operation. """
         print( repr(self.arg1) )
@@ -225,7 +228,14 @@ class Instruction:
     # string
     def Concatenate(self):
         """ CONCAT operation. """
-        self.arg1.Set(self.arg2.Concatenate(self.arg3))
+        if self.arg2.GetType() != int:
+            raise Err.OperandException('invalid types')
+        try:
+            self.arg1.Set(self.arg2.Concatenate(self.arg3))
+        except AttributeError:
+            raise Err.OperandException('invalid types')
+        
+
     def StrLen(self):
         """ STRLEN operation. """
         self.arg1.Set( IntConstant(len(self.arg2)) )
@@ -418,8 +428,8 @@ class Instruction:
         except: raise XMLException('No text in instruction'+self.order)
 
         # name and location
-        varname = re.compile(r'(?<=^((LF)|(GF)|(TF))@)[-a-zA-Z_$&%*]+$')
-        loc = re.compile(r'^((LF)|(GF)|(TF))(?=@[-a-zA-Z_$&%*]+$)')
+        varname = re.compile(r'(?<=^((LF)|(GF)|(TF))@)[-a-zA-Z_$&%*][-a-zA-Z0-9_$&%*]*$')
+        loc = re.compile(r'^((LF)|(GF)|(TF))(?=@[-a-zA-Z_$&%*][-a-zA-Z0-9_$&%*]*$)')
         if varname.search(val) is None or loc.search(val) is None:
             raise Err.SyntaxException("Variable name expected: instruction "+self.order)
 
@@ -448,7 +458,7 @@ class Instruction:
         except: raise XMLException('No text in instruction'+self.order)
 
         # name
-        labelname = re.compile(r'^[-a-zA-Z_$&%*]+$')
+        labelname = re.compile(r'^[-a-zA-Z_$&%*][-a-zA-Z0-9_$&%*]*$')
         if labelname.search(val) is None:
             raise Err.SyntaxException('Label name expected: instruction ' + self.order)
 
@@ -626,7 +636,7 @@ class Instruction:
 
         # STRI2INT
         elif self.opcode == 'STRI2INT':
-            self.ReadOperands(self.ParseVariable, self.ParseConstant)
+            self.ReadOperands(self.ParseVariable, self.ParseConstant, self.ParseConstant)
             return self.StrI2Int
 
         # READ
